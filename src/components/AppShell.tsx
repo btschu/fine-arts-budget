@@ -24,16 +24,7 @@ export default function AppShell({
       </aside>
 
       {/* Mobile top bar */}
-      <div className="no-print flex items-center justify-between border-b border-slate-200 bg-white px-4 py-3 lg:hidden">
-        <span className="flex items-center gap-2 text-lg font-semibold text-slate-900">
-          <span
-            className="flex h-7 w-7 items-center justify-center rounded-lg bg-red-800 text-base font-bold text-white"
-            aria-hidden
-          >
-            $
-          </span>
-          Backstage
-        </span>
+      <div className="no-print flex items-center gap-3 border-b border-slate-200 bg-white px-4 py-3 lg:hidden">
         <button
           type="button"
           aria-label="Open menu"
@@ -55,6 +46,15 @@ export default function AppShell({
             <line x1="3" y1="18" x2="21" y2="18" />
           </svg>
         </button>
+        <span className="flex items-center gap-2 text-lg font-semibold text-slate-900">
+          <span
+            className="flex h-7 w-7 items-center justify-center rounded-lg bg-red-800 text-base font-bold text-white"
+            aria-hidden
+          >
+            $
+          </span>
+          Backstage
+        </span>
       </div>
 
       {/* Mobile drawer */}
