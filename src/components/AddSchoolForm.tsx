@@ -31,16 +31,16 @@ export default function AddSchoolForm() {
           }
         });
       }}
-      className="flex flex-col gap-4 rounded-lg border border-slate-200 bg-white p-5 shadow-sm"
+      className="flex flex-col gap-4 rounded-lg border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900"
     >
-      <h2 className="font-medium text-slate-900">Add a school</h2>
-      <p className="text-xs text-slate-500">
+      <h2 className="font-medium text-slate-900 dark:text-slate-100">Add a school</h2>
+      <p className="text-xs text-slate-500 dark:text-slate-400">
         You&apos;ll be added to it automatically so you can manage it right
         away.
       </p>
       <div className="grid gap-3 sm:grid-cols-3">
         <div className="flex flex-col gap-1">
-          <label className="text-xs font-medium text-slate-600">
+          <label className="text-xs font-medium text-slate-600 dark:text-slate-400">
             School name
           </label>
           <input
@@ -48,11 +48,11 @@ export default function AddSchoolForm() {
             type="text"
             required
             placeholder="North Middle School"
-            className="rounded border border-slate-300 px-2 py-1.5 text-sm"
+            className="rounded border border-slate-300 px-2 py-1.5 text-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
           />
         </div>
         <div className="flex flex-col gap-1">
-          <label className="text-xs font-medium text-slate-600">
+          <label className="text-xs font-medium text-slate-600 dark:text-slate-400">
             School year
           </label>
           <input
@@ -60,11 +60,11 @@ export default function AddSchoolForm() {
             type="text"
             required
             defaultValue={defaultYearLabel()}
-            className="rounded border border-slate-300 px-2 py-1.5 text-sm"
+            className="rounded border border-slate-300 px-2 py-1.5 text-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
           />
         </div>
         <div className="flex flex-col gap-1">
-          <label className="text-xs font-medium text-slate-600">
+          <label className="text-xs font-medium text-slate-600 dark:text-slate-400">
             Starting balance
           </label>
           <input
@@ -72,11 +72,11 @@ export default function AddSchoolForm() {
             type="number"
             step="0.01"
             defaultValue={0}
-            className="rounded border border-slate-300 px-2 py-1.5 text-sm"
+            className="rounded border border-slate-300 px-2 py-1.5 text-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
           />
         </div>
       </div>
-      {error && <p className="text-sm text-red-600">{error}</p>}
+      {error && <p className="text-sm text-red-600 dark:text-red-400">{error}</p>}
       <button
         type="submit"
         disabled={pending}

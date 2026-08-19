@@ -17,15 +17,15 @@ export default function AppShell({
   return (
     <div className="min-h-screen lg:flex">
       {/* Desktop sidebar */}
-      <aside className="no-print hidden lg:block lg:w-64 lg:shrink-0 lg:border-r lg:border-slate-200">
+      <aside className="no-print hidden lg:block lg:w-64 lg:shrink-0 lg:border-r lg:border-slate-200 dark:lg:border-slate-800">
         <div className="fixed h-screen w-64">
           <Sidebar userName={userName} schools={schools} />
         </div>
       </aside>
 
       {/* Mobile top bar */}
-      <div className="no-print flex items-center justify-between border-b border-slate-200 bg-white px-4 py-3 lg:hidden">
-        <span className="flex items-center gap-2 text-lg font-semibold text-slate-900">
+      <div className="no-print flex items-center justify-between border-b border-slate-200 bg-white px-4 py-3 lg:hidden dark:border-slate-800 dark:bg-slate-900">
+        <span className="flex items-center gap-2 text-lg font-semibold text-slate-900 dark:text-slate-100">
           <span
             className="flex h-7 w-7 items-center justify-center rounded-lg bg-red-800 text-base font-bold text-white"
             aria-hidden
@@ -38,7 +38,7 @@ export default function AppShell({
           type="button"
           aria-label="Open menu"
           onClick={() => setDrawerOpen(true)}
-          className="rounded p-2 text-slate-600 hover:bg-slate-100"
+          className="rounded p-2 text-slate-600 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -61,7 +61,7 @@ export default function AppShell({
       {drawerOpen && (
         <div className="fixed inset-0 z-50 lg:hidden">
           <div
-            className="absolute inset-0 bg-slate-900/50"
+            className="absolute inset-0 bg-slate-900/50 dark:bg-black/60"
             onClick={() => setDrawerOpen(false)}
           />
           <div className="absolute inset-y-0 left-0 w-64 shadow-xl">

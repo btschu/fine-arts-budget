@@ -50,14 +50,16 @@ export default function LogPurchaseModal({
 
       {open && (
         <Modal title="Log a purchase" onClose={close}>
-          <div className="mb-4 rounded-md bg-slate-50 p-3 text-sm">
-            <div className="flex items-center justify-between text-slate-500">
+          <div className="mb-4 rounded-md bg-slate-50 p-3 text-sm dark:bg-slate-800">
+            <div className="flex items-center justify-between text-slate-500 dark:text-slate-400">
               <span>Current balance</span>
               <span>{formatCurrency(currentBalance)}</span>
             </div>
             <div
               className={`mt-1 flex items-center justify-between text-base font-semibold ${
-                balanceAfter < 0 ? "text-red-600" : "text-slate-900"
+                balanceAfter < 0
+                  ? "text-red-600 dark:text-red-400"
+                  : "text-slate-900 dark:text-slate-100"
               }`}
             >
               <span>Balance after</span>
@@ -87,7 +89,7 @@ export default function LogPurchaseModal({
             className="flex flex-col gap-3"
           >
             <div className="flex flex-col gap-1">
-              <label className="text-xs font-medium text-slate-600">
+              <label className="text-xs font-medium text-slate-600 dark:text-slate-400">
                 Purchased from
               </label>
               <input
@@ -96,7 +98,7 @@ export default function LogPurchaseModal({
                 required
                 autoFocus
                 list="vendor-suggestions"
-                className="rounded border border-slate-300 px-3 py-2 text-sm"
+                className="rounded border border-slate-300 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
               />
               <datalist id="vendor-suggestions">
                 {vendorSuggestions.map((v) => (
@@ -105,18 +107,18 @@ export default function LogPurchaseModal({
               </datalist>
             </div>
             <div className="flex flex-col gap-1">
-              <label className="text-xs font-medium text-slate-600">
+              <label className="text-xs font-medium text-slate-600 dark:text-slate-400">
                 What was purchased
               </label>
               <input
                 name="item"
                 type="text"
                 required
-                className="rounded border border-slate-300 px-3 py-2 text-sm"
+                className="rounded border border-slate-300 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
               />
             </div>
             <div className="flex flex-col gap-1">
-              <label className="text-xs font-medium text-slate-600">
+              <label className="text-xs font-medium text-slate-600 dark:text-slate-400">
                 Cost
               </label>
               <input
@@ -127,37 +129,37 @@ export default function LogPurchaseModal({
                 required
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
-                className="rounded border border-slate-300 px-3 py-2 text-sm"
+                className="rounded border border-slate-300 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
               />
             </div>
             <div className="flex flex-col gap-1">
-              <label className="text-xs font-medium text-slate-600">
+              <label className="text-xs font-medium text-slate-600 dark:text-slate-400">
                 Date of purchase
               </label>
               <input
                 name="spentAt"
                 type="date"
                 defaultValue={todayLocal()}
-                className="rounded border border-slate-300 px-3 py-2 text-sm"
+                className="rounded border border-slate-300 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
               />
             </div>
             <div className="flex flex-col gap-1">
-              <label className="text-xs font-medium text-slate-600">
+              <label className="text-xs font-medium text-slate-600 dark:text-slate-400">
                 Receipt photo (optional)
               </label>
               <input
                 name="receipt"
                 type="file"
                 accept="image/*"
-                className="text-sm text-slate-500 file:mr-2 file:rounded file:border-0 file:bg-slate-100 file:px-2 file:py-1 file:text-xs"
+                className="text-sm text-slate-500 file:mr-2 file:rounded file:border-0 file:bg-slate-100 file:px-2 file:py-1 file:text-xs dark:text-slate-400 dark:file:bg-slate-800 dark:file:text-slate-300"
               />
             </div>
-            {error && <p className="text-sm text-red-600">{error}</p>}
+            {error && <p className="text-sm text-red-600 dark:text-red-400">{error}</p>}
             <div className="mt-2 flex justify-end gap-2">
               <button
                 type="button"
                 onClick={close}
-                className="rounded border border-slate-300 px-4 py-2 text-sm text-slate-600 hover:bg-slate-50"
+                className="rounded border border-slate-300 px-4 py-2 text-sm text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-400 dark:hover:bg-slate-800"
               >
                 Cancel
               </button>

@@ -12,11 +12,11 @@ export default function ChangePasswordForm() {
   return (
     <form
       action={formAction}
-      className="flex flex-col gap-3 rounded-lg border border-slate-200 bg-white p-5 shadow-sm"
+      className="flex flex-col gap-3 rounded-lg border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900"
     >
-      <h2 className="font-medium text-slate-900">Change password</h2>
+      <h2 className="font-medium text-slate-900 dark:text-slate-100">Change password</h2>
       <div className="flex flex-col gap-1">
-        <label className="text-xs font-medium text-slate-600">
+        <label className="text-xs font-medium text-slate-600 dark:text-slate-400">
           Current password
         </label>
         <input
@@ -24,11 +24,11 @@ export default function ChangePasswordForm() {
           type="password"
           required
           autoComplete="current-password"
-          className="rounded border border-slate-300 px-2 py-1.5 text-sm sm:max-w-xs"
+          className="rounded border border-slate-300 px-2 py-1.5 text-sm sm:max-w-xs dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
         />
       </div>
       <div className="flex flex-col gap-1">
-        <label className="text-xs font-medium text-slate-600">
+        <label className="text-xs font-medium text-slate-600 dark:text-slate-400">
           New password
         </label>
         <input
@@ -37,12 +37,12 @@ export default function ChangePasswordForm() {
           required
           minLength={8}
           autoComplete="new-password"
-          className="rounded border border-slate-300 px-2 py-1.5 text-sm sm:max-w-xs"
+          className="rounded border border-slate-300 px-2 py-1.5 text-sm sm:max-w-xs dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
         />
       </div>
-      {state.error && <p className="text-sm text-red-600">{state.error}</p>}
+      {state.error && <p className="text-sm text-red-600 dark:text-red-400">{state.error}</p>}
       {state.success && (
-        <p className="text-sm text-emerald-600">Password updated.</p>
+        <p className="text-sm text-emerald-600 dark:text-emerald-400">Password updated.</p>
       )}
       <button
         type="submit"
