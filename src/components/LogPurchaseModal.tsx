@@ -16,9 +16,11 @@ function todayLocal() {
 export default function LogPurchaseModal({
   schoolYearId,
   currentBalance,
+  vendorSuggestions = [],
 }: {
   schoolYearId: string;
   currentBalance: number;
+  vendorSuggestions?: string[];
 }) {
   const [open, setOpen] = useState(false);
   const [amount, setAmount] = useState("");
@@ -93,8 +95,14 @@ export default function LogPurchaseModal({
                 type="text"
                 required
                 autoFocus
+                list="vendor-suggestions"
                 className="rounded border border-slate-300 px-3 py-2 text-sm"
               />
+              <datalist id="vendor-suggestions">
+                {vendorSuggestions.map((v) => (
+                  <option key={v} value={v} />
+                ))}
+              </datalist>
             </div>
             <div className="flex flex-col gap-1">
               <label className="text-xs font-medium text-slate-600">

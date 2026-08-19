@@ -1,22 +1,44 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useMemo, useState, useTransition } from "react";
 import { deleteExpense, updateExpense } from "@/app/actions/expense-actions";
 import { formatCurrency, formatDate } from "@/lib/format";
 import { compressImage } from "@/lib/compressImage";
+import { ledgerRowsToCsv, downloadCsv } from "@/lib/csv";
 import type { LedgerRow } from "@/lib/ledger";
 
 export type { LedgerRow };
+
+const VENDOR_LIST_ID = "ledger-vendor-suggestions";
 
 export default function ExpenseLedger({
   schoolYearId,
   rows,
   readOnly = false,
+  vendorSuggestions = [],
+  exportFilename = "expenses.csv",
 }: {
   schoolYearId: string;
   rows: LedgerRow[];
   readOnly?: boolean;
+  vendorSuggestions?: string[];
+  exportFilename?: string;
 }) {
+  const [query, setQuery] = useState("");
+
+  const filteredRows = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return rows;
+    return rows.filter(
+      (row) =>
+        row.item.toLowerCase().includes(q) ||
+        row.vendor.toLowerCase().includes(q) ||
+        row.enteredByName.toLowerCase().includes(q) ||
+        row.amount.toFixed(2).includes(q) ||
+        formatCurrency(row.amount).toLowerCase().includes(q)
+    );
+  }, [rows, query]);
+
   if (rows.length === 0) {
     return (
       <p className="rounded-lg border border-dashed border-slate-300 p-6 text-center text-sm text-slate-500">
@@ -27,44 +49,77 @@ export default function ExpenseLedger({
 
   return (
     <>
-      {/* Mobile: stacked cards, no horizontal scroll */}
-      <div className="flex flex-col gap-3 lg:hidden">
-        {rows.map((row) => (
-          <ExpenseCard
-            key={row.id}
-            schoolYearId={schoolYearId}
-            row={row}
-            readOnly={readOnly}
-          />
+      <datalist id={VENDOR_LIST_ID}>
+        {vendorSuggestions.map((v) => (
+          <option key={v} value={v} />
         ))}
+      </datalist>
+
+      <div className="no-print mb-3 flex flex-wrap items-center gap-2">
+        <input
+          type="search"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Search item, vendor, teacher, or amount…"
+          className="min-w-0 flex-1 rounded border border-slate-300 px-3 py-1.5 text-sm"
+        />
+        <button
+          type="button"
+          onClick={() =>
+            downloadCsv(exportFilename, ledgerRowsToCsv(filteredRows))
+          }
+          className="rounded border border-slate-300 px-3 py-1.5 text-sm text-slate-600 hover:bg-slate-50"
+        >
+          Export CSV
+        </button>
       </div>
 
-      {/* Desktop: table */}
-      <div className="hidden rounded-lg border border-slate-200 bg-white shadow-sm lg:block">
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="border-b border-slate-200 bg-slate-50 text-left text-xs font-medium uppercase tracking-wide text-slate-500">
-              <th className="px-4 py-2">Date</th>
-              <th className="px-4 py-2">Item</th>
-              <th className="px-4 py-2">Purchased from</th>
-              <th className="px-4 py-2">Entered by</th>
-              <th className="px-4 py-2 text-right">Amount</th>
-              <th className="px-4 py-2 text-right">Balance</th>
-              {!readOnly && <th className="px-4 py-2" />}
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map((row) => (
-              <ExpenseRow
+      {filteredRows.length === 0 ? (
+        <p className="rounded-lg border border-dashed border-slate-300 p-6 text-center text-sm text-slate-500">
+          No purchases match &quot;{query}&quot;.
+        </p>
+      ) : (
+        <>
+          {/* Mobile: stacked cards, no horizontal scroll */}
+          <div className="flex flex-col gap-3 lg:hidden">
+            {filteredRows.map((row) => (
+              <ExpenseCard
                 key={row.id}
                 schoolYearId={schoolYearId}
                 row={row}
                 readOnly={readOnly}
               />
             ))}
-          </tbody>
-        </table>
-      </div>
+          </div>
+
+          {/* Desktop: table */}
+          <div className="hidden rounded-lg border border-slate-200 bg-white shadow-sm lg:block">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-slate-200 bg-slate-50 text-left text-xs font-medium uppercase tracking-wide text-slate-500">
+                  <th className="px-4 py-2">Date</th>
+                  <th className="px-4 py-2">Item</th>
+                  <th className="px-4 py-2">Purchased from</th>
+                  <th className="px-4 py-2">Entered by</th>
+                  <th className="px-4 py-2 text-right">Amount</th>
+                  <th className="px-4 py-2 text-right">Balance</th>
+                  {!readOnly && <th className="px-4 py-2" />}
+                </tr>
+              </thead>
+              <tbody>
+                {filteredRows.map((row) => (
+                  <ExpenseRow
+                    key={row.id}
+                    schoolYearId={schoolYearId}
+                    row={row}
+                    readOnly={readOnly}
+                  />
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </>
+      )}
     </>
   );
 }
@@ -121,6 +176,7 @@ function EditFields({ row }: { row: LedgerRow }) {
           name="vendor"
           defaultValue={row.vendor}
           required
+          list={VENDOR_LIST_ID}
           className="rounded border border-slate-300 px-2 py-1 text-sm"
         />
       </div>

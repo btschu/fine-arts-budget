@@ -10,6 +10,7 @@ import { prisma } from "@/lib/prisma";
 import { formatCurrency } from "@/lib/format";
 import { getSpendingByTeacher } from "@/lib/balance";
 import { buildLedgerRows } from "@/lib/ledger";
+import { getVendorSuggestions } from "@/lib/vendors";
 import LogPurchaseModal from "@/components/LogPurchaseModal";
 import StartingBalanceEditor from "@/components/StartingBalanceEditor";
 import ExpenseLedger from "@/components/ExpenseLedger";
@@ -46,6 +47,7 @@ export default async function SchoolPage({
   );
 
   const spendingByTeacher = await getSpendingByTeacher(activeYear.id);
+  const vendorSuggestions = await getVendorSuggestions(school.id);
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-6 sm:py-10">
@@ -82,11 +84,17 @@ export default async function SchoolPage({
           <LogPurchaseModal
             schoolYearId={activeYear.id}
             currentBalance={currentBalance}
+            vendorSuggestions={vendorSuggestions}
           />
         </div>
       </div>
 
-      <ExpenseLedger schoolYearId={activeYear.id} rows={rows} />
+      <ExpenseLedger
+        schoolYearId={activeYear.id}
+        rows={rows}
+        vendorSuggestions={vendorSuggestions}
+        exportFilename={`${school.name} - ${activeYear.label}.csv`}
+      />
 
       {spendingByTeacher.length > 0 && (
         <div className="mt-6">

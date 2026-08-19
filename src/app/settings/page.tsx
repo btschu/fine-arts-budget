@@ -1,6 +1,7 @@
 import { requireUser, getMySchools, isAdmin } from "@/lib/authz";
 import { prisma } from "@/lib/prisma";
 import AddTeacherForm from "@/components/AddTeacherForm";
+import AddSchoolForm from "@/components/AddSchoolForm";
 import ManageMemberModal from "@/components/ManageMemberModal";
 import AdminToggle from "@/components/AdminToggle";
 import ChangePasswordForm from "@/components/ChangePasswordForm";
@@ -49,6 +50,8 @@ export default async function SettingsPage() {
 
       <div className="flex flex-col gap-8">
         <ChangePasswordForm />
+
+        {admin && <AddSchoolForm />}
 
         {schools.length === 0 ? (
           <p className="text-slate-500">

@@ -92,7 +92,12 @@ export default async function SchoolYearReportPage({
         </div>
       )}
 
-      <ExpenseLedger schoolYearId={year.id} rows={rows} readOnly />
+      <ExpenseLedger
+        schoolYearId={year.id}
+        rows={rows}
+        readOnly
+        exportFilename={`${school.name} - ${year.label}.csv`}
+      />
     </div>
   );
 }

@@ -24,6 +24,10 @@ export default async function LoginPage({
           Sign in with the account your department created for you.
         </p>
         <LoginForm callbackUrl={callbackUrl ?? "/"} />
+        <p className="mt-4 text-center text-xs text-slate-400">
+          Forgot your password? Contact your fine arts admin — they can
+          reset it for you in Settings.
+        </p>
       </div>
     </div>
   );
