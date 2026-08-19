@@ -1,0 +1,81 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id           String   @id @default(cuid())
+  name         String
+  email        String   @unique
+  passwordHash String
+  isAdmin      Boolean  @default(false)
+  createdAt    DateTime @default(now())
+
+  memberships     Membership[]
+  expensesEntered Expense[]    @relation("EnteredBy")
+  expensesUpdated Expense[]    @relation("UpdatedBy")
+  yearsClosed     SchoolYear[] @relation("ClosedBy")
+}
+
+model School {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  createdAt DateTime @default(now())
+
+  memberships Membership[]
+  schoolYears SchoolYear[]
+}
+
+model Membership {
+  id       String @id @default(cuid())
+  userId   String
+  schoolId String
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  school School @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, schoolId])
+}
+
+model SchoolYear {
+  id              String    @id @default(cuid())
+  schoolId        String
+  label           String
+  startingBalance Decimal   @db.Decimal(10, 2)
+  startedAt       DateTime  @default(now())
+  closedAt        DateTime?
+  closedById      String?
+
+  school   School    @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+  closedBy User?     @relation("ClosedBy", fields: [closedById], references: [id])
+  expenses Expense[]
+
+  @@unique([schoolId, label])
+  @@index([schoolId, closedAt])
+}
+
+model Expense {
+  id           String   @id @default(cuid())
+  schoolYearId String
+  amount       Decimal  @db.Decimal(10, 2)
+  item         String
+  vendor       String
+  spentAt      DateTime @default(now())
+  createdAt    DateTime @default(now())
+
+  enteredById String
+  updatedById String?
+  updatedAt   DateTime?
+
+  receiptImage    Bytes?
+  receiptMimeType String?
+
+  schoolYear SchoolYear @relation(fields: [schoolYearId], references: [id], onDelete: Cascade)
+  enteredBy  User       @relation("EnteredBy", fields: [enteredById], references: [id])
+  updatedBy  User?      @relation("UpdatedBy", fields: [updatedById], references: [id])
+
+  @@index([schoolYearId, spentAt])
+}

@@ -1,0 +1,421 @@
+"use client";
+
+import { useState, useTransition } from "react";
+import { deleteExpense, updateExpense } from "@/app/actions/expense-actions";
+import { formatCurrency, formatDate } from "@/lib/format";
+import { compressImage } from "@/lib/compressImage";
+import type { LedgerRow } from "@/lib/ledger";
+
+export type { LedgerRow };
+
+export default function ExpenseLedger({
+  schoolYearId,
+  rows,
+  readOnly = false,
+}: {
+  schoolYearId: string;
+  rows: LedgerRow[];
+  readOnly?: boolean;
+}) {
+  if (rows.length === 0) {
+    return (
+      <p className="rounded-lg border border-dashed border-slate-300 p-6 text-center text-sm text-slate-500">
+        No purchases logged yet.
+      </p>
+    );
+  }
+
+  return (
+    <>
+      {/* Mobile: stacked cards, no horizontal scroll */}
+      <div className="flex flex-col gap-3 lg:hidden">
+        {rows.map((row) => (
+          <ExpenseCard
+            key={row.id}
+            schoolYearId={schoolYearId}
+            row={row}
+            readOnly={readOnly}
+          />
+        ))}
+      </div>
+
+      {/* Desktop: table */}
+      <div className="hidden rounded-lg border border-slate-200 bg-white shadow-sm lg:block">
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="border-b border-slate-200 bg-slate-50 text-left text-xs font-medium uppercase tracking-wide text-slate-500">
+              <th className="px-4 py-2">Date</th>
+              <th className="px-4 py-2">Item</th>
+              <th className="px-4 py-2">Purchased from</th>
+              <th className="px-4 py-2">Entered by</th>
+              <th className="px-4 py-2 text-right">Amount</th>
+              <th className="px-4 py-2 text-right">Balance</th>
+              {!readOnly && <th className="px-4 py-2" />}
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((row) => (
+              <ExpenseRow
+                key={row.id}
+                schoolYearId={schoolYearId}
+                row={row}
+                readOnly={readOnly}
+              />
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </>
+  );
+}
+
+function useEditableExpense(schoolYearId: string, row: LedgerRow) {
+  const [editing, setEditing] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [pending, startTransition] = useTransition();
+
+  const [confirmingDelete, setConfirmingDelete] = useState(false);
+  const [deletePending, startDeleteTransition] = useTransition();
+
+  async function save(formData: FormData) {
+    setError(null);
+    const receipt = formData.get("receipt");
+    if (receipt instanceof File && receipt.size > 0) {
+      formData.set("receipt", await compressImage(receipt));
+    }
+    startTransition(async () => {
+      try {
+        await updateExpense(row.id, schoolYearId, formData);
+        setEditing(false);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "Something went wrong.");
+      }
+    });
+  }
+
+  function confirmDelete() {
+    startDeleteTransition(async () => {
+      await deleteExpense(row.id, schoolYearId);
+    });
+  }
+
+  return {
+    editing,
+    setEditing,
+    error,
+    pending,
+    save,
+    confirmingDelete,
+    setConfirmingDelete,
+    deletePending,
+    confirmDelete,
+  };
+}
+
+function EditFields({ row }: { row: LedgerRow }) {
+  return (
+    <>
+      <div className="flex flex-col gap-1">
+        <label className="text-xs text-slate-500">Purchased from</label>
+        <input
+          name="vendor"
+          defaultValue={row.vendor}
+          required
+          className="rounded border border-slate-300 px-2 py-1 text-sm"
+        />
+      </div>
+      <div className="flex flex-col gap-1">
+        <label className="text-xs text-slate-500">Item</label>
+        <input
+          name="item"
+          defaultValue={row.item}
+          required
+          className="rounded border border-slate-300 px-2 py-1 text-sm"
+        />
+      </div>
+      <div className="flex flex-col gap-1">
+        <label className="text-xs text-slate-500">Cost</label>
+        <input
+          name="amount"
+          type="number"
+          step="0.01"
+          min="0.01"
+          defaultValue={row.amount}
+          required
+          className="w-full rounded border border-slate-300 px-2 py-1 text-sm"
+        />
+      </div>
+      <div className="flex flex-col gap-1">
+        <label className="text-xs text-slate-500">Date of purchase</label>
+        <input
+          name="spentAt"
+          type="date"
+          defaultValue={row.spentAt.slice(0, 10)}
+          className="rounded border border-slate-300 px-2 py-1 text-sm"
+        />
+      </div>
+      <div className="flex flex-col gap-1">
+        <label className="text-xs text-slate-500">
+          {row.hasReceipt ? "Replace receipt photo" : "Receipt photo"}
+        </label>
+        <input
+          name="receipt"
+          type="file"
+          accept="image/*"
+          className="text-xs text-slate-500 file:mr-2 file:rounded file:border-0 file:bg-slate-100 file:px-2 file:py-1 file:text-xs"
+        />
+      </div>
+    </>
+  );
+}
+
+function ReceiptLink({ id }: { id: string }) {
+  return (
+    <a
+      href={`/api/receipts/${id}`}
+      target="_blank"
+      rel="noopener noreferrer"
+      onClick={(e) => e.stopPropagation()}
+      className="inline-block rounded border border-slate-300 px-2 py-1 text-xs text-slate-600 hover:bg-slate-50"
+    >
+      📎 Receipt
+    </a>
+  );
+}
+
+function ExpenseCard({
+  schoolYearId,
+  row,
+  readOnly,
+}: {
+  schoolYearId: string;
+  row: LedgerRow;
+  readOnly: boolean;
+}) {
+  const {
+    editing,
+    setEditing,
+    error,
+    pending,
+    save,
+    confirmingDelete,
+    setConfirmingDelete,
+    deletePending,
+    confirmDelete,
+  } = useEditableExpense(schoolYearId, row);
+
+  if (editing) {
+    return (
+      <form
+        action={save}
+        className="flex flex-col gap-3 rounded-lg border border-amber-200 bg-amber-50/40 p-4"
+      >
+        <EditFields row={row} />
+        {error && <p className="text-sm text-red-600">{error}</p>}
+        <div className="flex justify-end gap-2">
+          <button
+            type="button"
+            onClick={() => setEditing(false)}
+            className="rounded border border-slate-300 px-3 py-1.5 text-sm text-slate-600 hover:bg-slate-50"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            disabled={pending}
+            className="rounded bg-red-800 px-3 py-1.5 text-sm text-white hover:bg-red-900 disabled:opacity-60"
+          >
+            Save
+          </button>
+        </div>
+      </form>
+    );
+  }
+
+  return (
+    <div className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
+      <div className="flex items-start justify-between gap-2">
+        <div>
+          <p className="font-medium text-slate-900">{row.vendor}</p>
+          <p className="text-xs text-slate-500">
+            {formatDate(row.spentAt)} · {row.item}
+          </p>
+        </div>
+        <p className="whitespace-nowrap text-right font-semibold text-slate-900">
+          {formatCurrency(row.amount)}
+        </p>
+      </div>
+      <div className="mt-3 flex items-center justify-between text-xs text-slate-500">
+        <span>
+          {row.enteredByName}
+          {row.updatedByName && <span> (edited by {row.updatedByName})</span>}
+        </span>
+        <span>Balance {formatCurrency(row.runningBalance)}</span>
+      </div>
+      {row.hasReceipt && (
+        <div className="mt-2">
+          <ReceiptLink id={row.id} />
+        </div>
+      )}
+      {!readOnly &&
+        (confirmingDelete ? (
+          <div className="mt-3 flex items-center justify-between gap-2 border-t border-slate-100 pt-3">
+            <span className="text-xs text-slate-600">Delete this purchase?</span>
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={() => setConfirmingDelete(false)}
+                className="rounded border border-slate-300 px-2 py-1 text-xs text-slate-600 hover:bg-slate-50"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                disabled={deletePending}
+                onClick={confirmDelete}
+                className="rounded bg-red-700 px-2 py-1 text-xs font-medium text-white hover:bg-red-800 disabled:opacity-60"
+              >
+                {deletePending ? "Deleting..." : "Yes, delete"}
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div className="mt-3 flex justify-end gap-2 border-t border-slate-100 pt-3">
+            <button
+              type="button"
+              onClick={() => setEditing(true)}
+              className="rounded border border-slate-300 px-2 py-1 text-xs text-slate-600 hover:bg-slate-50"
+            >
+              Edit
+            </button>
+            <button
+              type="button"
+              onClick={() => setConfirmingDelete(true)}
+              className="rounded border border-red-300 px-2 py-1 text-xs text-red-600 hover:bg-red-50"
+            >
+              Delete
+            </button>
+          </div>
+        ))}
+    </div>
+  );
+}
+
+function ExpenseRow({
+  schoolYearId,
+  row,
+  readOnly,
+}: {
+  schoolYearId: string;
+  row: LedgerRow;
+  readOnly: boolean;
+}) {
+  const {
+    editing,
+    setEditing,
+    error,
+    pending,
+    save,
+    confirmingDelete,
+    setConfirmingDelete,
+    deletePending,
+    confirmDelete,
+  } = useEditableExpense(schoolYearId, row);
+
+  if (editing) {
+    return (
+      <tr className="border-b border-slate-100 bg-amber-50/40">
+        <td colSpan={7} className="px-4 py-3">
+          <form action={save} className="flex flex-wrap items-end gap-3">
+            <EditFields row={row} />
+            <button
+              type="submit"
+              disabled={pending}
+              className="rounded bg-red-800 px-3 py-1.5 text-sm text-white hover:bg-red-900 disabled:opacity-60"
+            >
+              Save
+            </button>
+            <button
+              type="button"
+              onClick={() => setEditing(false)}
+              className="rounded border border-slate-300 px-3 py-1.5 text-sm text-slate-600 hover:bg-slate-50"
+            >
+              Cancel
+            </button>
+            {error && <span className="text-sm text-red-600">{error}</span>}
+          </form>
+        </td>
+      </tr>
+    );
+  }
+
+  return (
+    <tr className="border-b border-slate-100 last:border-0 hover:bg-slate-50">
+      <td className="px-4 py-2 whitespace-nowrap text-slate-600">
+        {formatDate(row.spentAt)}
+      </td>
+      <td className="px-4 py-2 text-slate-900">
+        {row.item}
+        {row.hasReceipt && (
+          <div>
+            <ReceiptLink id={row.id} />
+          </div>
+        )}
+      </td>
+      <td className="px-4 py-2 text-slate-600">{row.vendor}</td>
+      <td className="px-4 py-2 text-slate-600">
+        {row.enteredByName}
+        {row.updatedByName && (
+          <span className="text-xs text-slate-400"> (edited by {row.updatedByName})</span>
+        )}
+      </td>
+      <td className="px-4 py-2 text-right text-slate-900">
+        {formatCurrency(row.amount)}
+      </td>
+      <td className="px-4 py-2 text-right text-slate-600">
+        {formatCurrency(row.runningBalance)}
+      </td>
+      {!readOnly && (
+        <td className="px-4 py-2 text-right whitespace-nowrap">
+          {confirmingDelete ? (
+            <span className="flex items-center justify-end gap-2">
+              <span className="text-xs text-slate-600">Delete?</span>
+              <button
+                type="button"
+                disabled={deletePending}
+                onClick={confirmDelete}
+                className="rounded bg-red-700 px-2 py-1 text-xs font-medium text-white hover:bg-red-800 disabled:opacity-60"
+              >
+                {deletePending ? "Deleting..." : "Yes"}
+              </button>
+              <button
+                type="button"
+                onClick={() => setConfirmingDelete(false)}
+                className="rounded border border-slate-300 px-2 py-1 text-xs text-slate-600 hover:bg-slate-50"
+              >
+                No
+              </button>
+            </span>
+          ) : (
+            <span className="flex justify-end gap-2">
+              <button
+                type="button"
+                onClick={() => setEditing(true)}
+                className="rounded border border-slate-300 px-2 py-1 text-xs text-slate-600 hover:bg-slate-50"
+              >
+                Edit
+              </button>
+              <button
+                type="button"
+                onClick={() => setConfirmingDelete(true)}
+                className="rounded border border-red-300 px-2 py-1 text-xs text-red-600 hover:bg-red-50"
+              >
+                Delete
+              </button>
+            </span>
+          )}
+        </td>
+      )}
+    </tr>
+  );
+}

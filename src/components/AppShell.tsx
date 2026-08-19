@@ -1,0 +1,80 @@
+"use client";
+
+import { useState } from "react";
+import Sidebar from "@/components/Sidebar";
+
+export default function AppShell({
+  userName,
+  schools,
+  children,
+}: {
+  userName: string;
+  schools: { id: string; name: string }[];
+  children: React.ReactNode;
+}) {
+  const [drawerOpen, setDrawerOpen] = useState(false);
+
+  return (
+    <div className="min-h-screen lg:flex">
+      {/* Desktop sidebar */}
+      <aside className="no-print hidden lg:block lg:w-64 lg:shrink-0 lg:border-r lg:border-slate-200">
+        <div className="fixed h-screen w-64">
+          <Sidebar userName={userName} schools={schools} />
+        </div>
+      </aside>
+
+      {/* Mobile top bar */}
+      <div className="no-print flex items-center justify-between border-b border-slate-200 bg-white px-4 py-3 lg:hidden">
+        <span className="flex items-center gap-2 text-lg font-semibold text-slate-900">
+          <span
+            className="flex h-7 w-7 items-center justify-center rounded-lg bg-red-800 text-base font-bold text-white"
+            aria-hidden
+          >
+            $
+          </span>
+          Backstage
+        </span>
+        <button
+          type="button"
+          aria-label="Open menu"
+          onClick={() => setDrawerOpen(true)}
+          className="rounded p-2 text-slate-600 hover:bg-slate-100"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="22"
+            height="22"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+          >
+            <line x1="3" y1="6" x2="21" y2="6" />
+            <line x1="3" y1="12" x2="21" y2="12" />
+            <line x1="3" y1="18" x2="21" y2="18" />
+          </svg>
+        </button>
+      </div>
+
+      {/* Mobile drawer */}
+      {drawerOpen && (
+        <div className="fixed inset-0 z-50 lg:hidden">
+          <div
+            className="absolute inset-0 bg-slate-900/50"
+            onClick={() => setDrawerOpen(false)}
+          />
+          <div className="absolute inset-y-0 left-0 w-64 shadow-xl">
+            <Sidebar
+              userName={userName}
+              schools={schools}
+              onNavigate={() => setDrawerOpen(false)}
+            />
+          </div>
+        </div>
+      )}
+
+      <main className="min-w-0 flex-1">{children}</main>
+    </div>
+  );
+}
