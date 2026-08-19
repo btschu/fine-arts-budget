@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import AddTeacherForm from "@/components/AddTeacherForm";
 import AddSchoolForm from "@/components/AddSchoolForm";
 import ManageMemberModal from "@/components/ManageMemberModal";
+import ManageSchoolModal from "@/components/ManageSchoolModal";
 import AdminToggle from "@/components/AdminToggle";
 import ChangePasswordForm from "@/components/ChangePasswordForm";
 
@@ -52,6 +53,28 @@ export default async function SettingsPage() {
         <ChangePasswordForm />
 
         {admin && <AddSchoolForm />}
+
+        {admin && schools.length > 0 && (
+          <div>
+            <h2 className="mb-3 font-medium text-slate-900">Schools</h2>
+            <div className="flex flex-col gap-2">
+              {schoolOptions.map((school) => (
+                <div
+                  key={school.id}
+                  className="flex items-center justify-between gap-3 rounded-lg border border-slate-200 bg-white p-3 shadow-sm"
+                >
+                  <p className="truncate font-medium text-slate-900">
+                    {school.name}
+                  </p>
+                  <ManageSchoolModal
+                    schoolId={school.id}
+                    schoolName={school.name}
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         {schools.length === 0 ? (
           <p className="text-slate-500">
