@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import Sidebar from "@/components/Sidebar";
 
 export default function AppShell({
@@ -25,7 +26,10 @@ export default function AppShell({
 
       {/* Mobile top bar */}
       <div className="no-print flex items-center justify-between border-b border-slate-200 bg-white px-4 py-3 lg:hidden dark:border-slate-800 dark:bg-slate-900">
-        <span className="flex items-center gap-2 text-lg font-semibold text-slate-900 dark:text-slate-100">
+        <Link
+          href="/"
+          className="flex items-center gap-2 text-lg font-semibold text-slate-900 dark:text-slate-100"
+        >
           <span
             className="flex h-7 w-7 items-center justify-center rounded-lg bg-red-800 text-base font-bold text-white"
             aria-hidden
@@ -33,7 +37,7 @@ export default function AppShell({
             $
           </span>
           Backstage
-        </span>
+        </Link>
         <button
           type="button"
           aria-label="Open menu"
