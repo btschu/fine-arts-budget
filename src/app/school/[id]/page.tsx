@@ -8,7 +8,12 @@ import {
 } from "@/lib/authz";
 import { prisma } from "@/lib/prisma";
 import { formatCurrency } from "@/lib/format";
-import { getSpendingByTeacher } from "@/lib/balance";
+import {
+  getSpendingByTeacher,
+  getSchoolYearCategories,
+  getCategorySpending,
+  effectiveStartingBalance,
+} from "@/lib/balance";
 import { buildLedgerRows } from "@/lib/ledger";
 import { getVendorSuggestions } from "@/lib/vendors";
 import LogPurchaseModal from "@/components/LogPurchaseModal";
@@ -16,6 +21,7 @@ import StartingBalanceEditor from "@/components/StartingBalanceEditor";
 import ExpenseLedger from "@/components/ExpenseLedger";
 import CloseYearForm from "@/components/CloseYearForm";
 import SpendingByTeacher from "@/components/SpendingByTeacher";
+import CategoryBreakdown from "@/components/CategoryBreakdown";
 
 export default async function SchoolPage({
   params,
@@ -37,10 +43,15 @@ export default async function SchoolPage({
   const expenses = await prisma.expense.findMany({
     where: { schoolYearId: activeYear.id },
     orderBy: { spentAt: "asc" },
-    include: { enteredBy: true, updatedBy: true },
+    include: { enteredBy: true, updatedBy: true, category: true },
   });
 
-  const startingBalance = Number(activeYear.startingBalance);
+  const categories = await getSchoolYearCategories(activeYear.id);
+  const categorySpending = await getCategorySpending(activeYear.id);
+  const startingBalance = effectiveStartingBalance(
+    activeYear.startingBalance,
+    categories
+  );
   const { rows, endingBalance: currentBalance } = buildLedgerRows(
     startingBalance,
     expenses
@@ -48,6 +59,20 @@ export default async function SchoolPage({
 
   const spendingByTeacher = await getSpendingByTeacher(activeYear.id);
   const vendorSuggestions = await getVendorSuggestions(school.id);
+
+  const categoryOptions = categories.map((c) => ({
+    id: c.id,
+    name: c.name,
+    isDefault: c.isDefault,
+  }));
+  const categoryBreakdown = categories.map((c) => ({
+    id: c.id,
+    name: c.name,
+    color: c.color,
+    isDefault: c.isDefault,
+    allocatedAmount: Number(c.allocatedAmount),
+    spent: categorySpending.get(c.id) ?? 0,
+  }));
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-6 sm:py-10">
@@ -57,10 +82,17 @@ export default async function SchoolPage({
             {school.name}
           </h1>
           <p className="text-xs text-slate-400 dark:text-slate-500">{activeYear.label} school year</p>
-          <StartingBalanceEditor
-            schoolYearId={activeYear.id}
-            startingBalance={startingBalance}
-          />
+          {categories.length > 0 ? (
+            <p className="text-sm text-slate-500 dark:text-slate-400">
+              Total budget: {formatCurrency(startingBalance)} (sum of
+              category budgets below)
+            </p>
+          ) : (
+            <StartingBalanceEditor
+              schoolYearId={activeYear.id}
+              startingBalance={startingBalance}
+            />
+          )}
           <div className="mt-1">
             <Link
               href={`/school/${school.id}/years`}
@@ -87,14 +119,24 @@ export default async function SchoolPage({
             schoolYearId={activeYear.id}
             currentBalance={currentBalance}
             vendorSuggestions={vendorSuggestions}
+            categories={categoryOptions}
           />
         </div>
       </div>
+
+      {(categories.length > 0 || admin) && (
+        <CategoryBreakdown
+          schoolYearId={activeYear.id}
+          categories={categoryBreakdown}
+          admin={admin}
+        />
+      )}
 
       <ExpenseLedger
         schoolYearId={activeYear.id}
         rows={rows}
         vendorSuggestions={vendorSuggestions}
+        categories={categoryOptions}
         exportFilename={`${school.name} - ${activeYear.label}.csv`}
       />
 

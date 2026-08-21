@@ -2,12 +2,18 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { requireUser, requireSchoolAccess } from "@/lib/authz";
 import { prisma } from "@/lib/prisma";
-import { getSpendingByTeacher } from "@/lib/balance";
+import {
+  getSpendingByTeacher,
+  getSchoolYearCategories,
+  getCategorySpending,
+  effectiveStartingBalance,
+} from "@/lib/balance";
 import { buildLedgerRows } from "@/lib/ledger";
 import { formatCurrency, formatDate } from "@/lib/format";
 import ExpenseLedger from "@/components/ExpenseLedger";
 import SpendingByTeacher from "@/components/SpendingByTeacher";
 import PrintButton from "@/components/PrintButton";
+import CategoryBreakdown from "@/components/CategoryBreakdown";
 
 export default async function SchoolYearReportPage({
   params,
@@ -28,11 +34,25 @@ export default async function SchoolYearReportPage({
   const expenses = await prisma.expense.findMany({
     where: { schoolYearId: year.id },
     orderBy: { spentAt: "asc" },
-    include: { enteredBy: true, updatedBy: true },
+    include: { enteredBy: true, updatedBy: true, category: true },
   });
 
-  const startingBalance = Number(year.startingBalance);
+  const categories = await getSchoolYearCategories(year.id);
+  const categorySpending = await getCategorySpending(year.id);
+  const startingBalance = effectiveStartingBalance(
+    year.startingBalance,
+    categories
+  );
   const { rows, endingBalance } = buildLedgerRows(startingBalance, expenses);
+
+  const categoryBreakdown = categories.map((c) => ({
+    id: c.id,
+    name: c.name,
+    color: c.color,
+    isDefault: c.isDefault,
+    allocatedAmount: Number(c.allocatedAmount),
+    spent: categorySpending.get(c.id) ?? 0,
+  }));
 
   const spendingByTeacher = await getSpendingByTeacher(year.id);
 
@@ -88,6 +108,14 @@ export default async function SchoolYearReportPage({
         </div>
       </div>
 
+      {categories.length > 0 && (
+        <CategoryBreakdown
+          schoolYearId={year.id}
+          categories={categoryBreakdown}
+          admin={false}
+        />
+      )}
+
       {spendingByTeacher.length > 0 && (
         <div className="mb-6">
           <SpendingByTeacher data={spendingByTeacher} />
@@ -98,6 +126,7 @@ export default async function SchoolYearReportPage({
         schoolYearId={year.id}
         rows={rows}
         readOnly
+        categories={categories.map((c) => ({ id: c.id, name: c.name }))}
         exportFilename={`${school.name} - ${year.label}.csv`}
       />
     </div>

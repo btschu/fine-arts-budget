@@ -5,23 +5,28 @@ import { deleteExpense, updateExpense } from "@/app/actions/expense-actions";
 import { formatCurrency, formatDate } from "@/lib/format";
 import { compressImage } from "@/lib/compressImage";
 import { ledgerRowsToCsv, downloadCsv } from "@/lib/csv";
+import { categoryBadgeClass } from "@/lib/categoryColors";
 import type { LedgerRow } from "@/lib/ledger";
 
 export type { LedgerRow };
 
 const VENDOR_LIST_ID = "ledger-vendor-suggestions";
 
+type CategoryOption = { id: string; name: string };
+
 export default function ExpenseLedger({
   schoolYearId,
   rows,
   readOnly = false,
   vendorSuggestions = [],
+  categories = [],
   exportFilename = "expenses.csv",
 }: {
   schoolYearId: string;
   rows: LedgerRow[];
   readOnly?: boolean;
   vendorSuggestions?: string[];
+  categories?: CategoryOption[];
   exportFilename?: string;
 }) {
   const [query, setQuery] = useState("");
@@ -34,6 +39,7 @@ export default function ExpenseLedger({
         row.item.toLowerCase().includes(q) ||
         row.vendor.toLowerCase().includes(q) ||
         row.enteredByName.toLowerCase().includes(q) ||
+        (row.categoryName ?? "").toLowerCase().includes(q) ||
         row.amount.toFixed(2).includes(q) ||
         formatCurrency(row.amount).toLowerCase().includes(q)
     );
@@ -60,7 +66,7 @@ export default function ExpenseLedger({
           type="search"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search item, vendor, teacher, or amount…"
+          placeholder="Search item, vendor, teacher, category, or amount…"
           className="min-w-0 flex-1 rounded border border-slate-300 px-3 py-1.5 text-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
         />
         <button
@@ -88,6 +94,7 @@ export default function ExpenseLedger({
                 schoolYearId={schoolYearId}
                 row={row}
                 readOnly={readOnly}
+                categories={categories}
               />
             ))}
           </div>
@@ -100,6 +107,7 @@ export default function ExpenseLedger({
                   <th className="px-4 py-2">Date</th>
                   <th className="px-4 py-2">Item</th>
                   <th className="px-4 py-2">Purchased from</th>
+                  <th className="px-4 py-2">Category</th>
                   <th className="px-4 py-2">Entered by</th>
                   <th className="px-4 py-2 text-right">Amount</th>
                   <th className="px-4 py-2 text-right">Balance</th>
@@ -113,6 +121,7 @@ export default function ExpenseLedger({
                     schoolYearId={schoolYearId}
                     row={row}
                     readOnly={readOnly}
+                    categories={categories}
                   />
                 ))}
               </tbody>
@@ -167,7 +176,30 @@ function useEditableExpense(schoolYearId: string, row: LedgerRow) {
   };
 }
 
-function EditFields({ row }: { row: LedgerRow }) {
+function CategoryTag({
+  categoryName,
+  categoryColor,
+}: {
+  categoryName: string | null;
+  categoryColor: string | null;
+}) {
+  if (!categoryName) return null;
+  return (
+    <span
+      className={`inline-flex items-center rounded px-1.5 py-0.5 text-xs font-medium ${categoryBadgeClass(categoryColor ?? "slate")}`}
+    >
+      {categoryName}
+    </span>
+  );
+}
+
+function EditFields({
+  row,
+  categories,
+}: {
+  row: LedgerRow;
+  categories: CategoryOption[];
+}) {
   return (
     <>
       <div className="flex flex-col gap-1">
@@ -189,6 +221,23 @@ function EditFields({ row }: { row: LedgerRow }) {
           className="rounded border border-slate-300 px-2 py-1 text-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
         />
       </div>
+      {categories.length > 0 && (
+        <div className="flex flex-col gap-1">
+          <label className="text-xs text-slate-500 dark:text-slate-400">Category</label>
+          <select
+            name="categoryId"
+            defaultValue={row.categoryId ?? ""}
+            className="rounded border border-slate-300 px-2 py-1 text-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+          >
+            <option value="">Uncategorized</option>
+            {categories.map((c) => (
+              <option key={c.id} value={c.id}>
+                {c.name}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
       <div className="flex flex-col gap-1">
         <label className="text-xs text-slate-500 dark:text-slate-400">Cost</label>
         <input
@@ -243,10 +292,12 @@ function ExpenseCard({
   schoolYearId,
   row,
   readOnly,
+  categories,
 }: {
   schoolYearId: string;
   row: LedgerRow;
   readOnly: boolean;
+  categories: CategoryOption[];
 }) {
   const {
     editing,
@@ -266,7 +317,7 @@ function ExpenseCard({
         action={save}
         className="flex flex-col gap-3 rounded-lg border border-amber-200 bg-amber-50/40 p-4 dark:border-amber-900 dark:bg-amber-950/20"
       >
-        <EditFields row={row} />
+        <EditFields row={row} categories={categories} />
         {error && <p className="text-sm text-red-600 dark:text-red-400">{error}</p>}
         <div className="flex justify-end gap-2">
           <button
@@ -301,12 +352,19 @@ function ExpenseCard({
           {formatCurrency(row.amount)}
         </p>
       </div>
-      <div className="mt-3 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
-        <span>
+      {row.categoryName && (
+        <div className="mt-2">
+          <CategoryTag categoryName={row.categoryName} categoryColor={row.categoryColor} />
+        </div>
+      )}
+      <div className="mt-3 flex items-center justify-between gap-2 text-xs text-slate-500 dark:text-slate-400">
+        <span className="min-w-0">
           {row.enteredByName}
           {row.updatedByName && <span> (edited by {row.updatedByName})</span>}
         </span>
-        <span>Balance {formatCurrency(row.runningBalance)}</span>
+        <span className="shrink-0 whitespace-nowrap text-right">
+          Balance {formatCurrency(row.runningBalance)}
+        </span>
       </div>
       {row.hasReceipt && (
         <div className="mt-2">
@@ -361,10 +419,12 @@ function ExpenseRow({
   schoolYearId,
   row,
   readOnly,
+  categories,
 }: {
   schoolYearId: string;
   row: LedgerRow;
   readOnly: boolean;
+  categories: CategoryOption[];
 }) {
   const {
     editing,
@@ -381,9 +441,9 @@ function ExpenseRow({
   if (editing) {
     return (
       <tr className="border-b border-slate-100 bg-amber-50/40 dark:border-slate-800 dark:bg-amber-950/20">
-        <td colSpan={7} className="px-4 py-3">
+        <td colSpan={8} className="px-4 py-3">
           <form action={save} className="flex flex-wrap items-end gap-3">
-            <EditFields row={row} />
+            <EditFields row={row} categories={categories} />
             <button
               type="submit"
               disabled={pending}
@@ -419,6 +479,9 @@ function ExpenseRow({
         )}
       </td>
       <td className="px-4 py-2 text-slate-600 dark:text-slate-400">{row.vendor}</td>
+      <td className="px-4 py-2">
+        <CategoryTag categoryName={row.categoryName} categoryColor={row.categoryColor} />
+      </td>
       <td className="px-4 py-2 text-slate-600 dark:text-slate-400">
         {row.enteredByName}
         {row.updatedByName && (

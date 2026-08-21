@@ -8,6 +8,9 @@ export type LedgerRow = {
   updatedByName: string | null;
   runningBalance: number;
   hasReceipt: boolean;
+  categoryId: string | null;
+  categoryName: string | null;
+  categoryColor: string | null;
 };
 
 type ExpenseLike = {
@@ -19,6 +22,7 @@ type ExpenseLike = {
   receiptMimeType: string | null;
   enteredBy: { name: string };
   updatedBy: { name: string } | null;
+  category: { id: string; name: string; color: string } | null;
 };
 
 export function buildLedgerRows(
@@ -39,6 +43,9 @@ export function buildLedgerRows(
       updatedByName: expense.updatedBy?.name ?? null,
       runningBalance: running,
       hasReceipt: expense.receiptMimeType != null,
+      categoryId: expense.category?.id ?? null,
+      categoryName: expense.category?.name ?? null,
+      categoryColor: expense.category?.color ?? null,
     });
   }
   rows.reverse();

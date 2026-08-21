@@ -2,7 +2,11 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { requireUser, requireSchoolAccess } from "@/lib/authz";
 import { prisma } from "@/lib/prisma";
-import { getYearBalance } from "@/lib/balance";
+import {
+  getYearBalance,
+  getSchoolYearCategories,
+  effectiveStartingBalance,
+} from "@/lib/balance";
 import { formatCurrency, formatDate } from "@/lib/format";
 
 export default async function SchoolYearsPage({
@@ -24,7 +28,12 @@ export default async function SchoolYearsPage({
 
   const yearsWithBalance = await Promise.all(
     years.map(async (year) => {
-      const { balance } = await getYearBalance(year.id, year.startingBalance);
+      const categories = await getSchoolYearCategories(year.id);
+      const startingBalance = effectiveStartingBalance(
+        year.startingBalance,
+        categories
+      );
+      const { balance } = await getYearBalance(year.id, startingBalance);
       return { ...year, endingBalance: balance };
     })
   );

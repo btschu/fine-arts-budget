@@ -17,10 +17,12 @@ export default function LogPurchaseModal({
   schoolYearId,
   currentBalance,
   vendorSuggestions = [],
+  categories = [],
 }: {
   schoolYearId: string;
   currentBalance: number;
   vendorSuggestions?: string[];
+  categories?: { id: string; name: string; isDefault: boolean }[];
 }) {
   const [open, setOpen] = useState(false);
   const [amount, setAmount] = useState("");
@@ -132,6 +134,25 @@ export default function LogPurchaseModal({
                 className="rounded border border-slate-300 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
               />
             </div>
+            {categories.length > 0 && (
+              <div className="flex flex-col gap-1">
+                <label className="text-xs font-medium text-slate-600 dark:text-slate-400">
+                  Category
+                </label>
+                <select
+                  name="categoryId"
+                  defaultValue={categories.find((c) => c.isDefault)?.id ?? ""}
+                  className="rounded border border-slate-300 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+                >
+                  <option value="">Uncategorized</option>
+                  {categories.map((c) => (
+                    <option key={c.id} value={c.id}>
+                      {c.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
             <div className="flex flex-col gap-1">
               <label className="text-xs font-medium text-slate-600 dark:text-slate-400">
                 Date of purchase

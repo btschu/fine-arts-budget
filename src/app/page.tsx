@@ -1,6 +1,10 @@
 import Link from "next/link";
 import { requireUser, getMySchools, getActiveSchoolYear } from "@/lib/authz";
-import { getYearBalance } from "@/lib/balance";
+import {
+  getYearBalance,
+  getSchoolYearCategories,
+  effectiveStartingBalance,
+} from "@/lib/balance";
 import { formatCurrency } from "@/lib/format";
 
 export default async function DashboardPage() {
@@ -10,9 +14,15 @@ export default async function DashboardPage() {
   const schoolsWithBalance = await Promise.all(
     schools.map(async (school) => {
       const activeYear = await getActiveSchoolYear(school.id);
-      const balance = activeYear
-        ? (await getYearBalance(activeYear.id, activeYear.startingBalance)).balance
-        : 0;
+      let balance = 0;
+      if (activeYear) {
+        const categories = await getSchoolYearCategories(activeYear.id);
+        const startingBalance = effectiveStartingBalance(
+          activeYear.startingBalance,
+          categories
+        );
+        balance = (await getYearBalance(activeYear.id, startingBalance)).balance;
+      }
       return { ...school, activeYear, balance };
     })
   );

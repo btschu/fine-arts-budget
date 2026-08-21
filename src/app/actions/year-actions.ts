@@ -3,7 +3,10 @@
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { requireUser, assertSchoolAccess, assertAdmin } from "@/lib/authz";
-import { getYearBalance } from "@/lib/balance";
+import {
+  getYearBalance,
+  effectiveStartingBalance,
+} from "@/lib/balance";
 
 export async function closeSchoolYear(schoolId: string, formData: FormData) {
   const user = await requireUser();
@@ -25,7 +28,14 @@ export async function closeSchoolYear(schoolId: string, formData: FormData) {
     throw new Error(`A school year named "${newLabel}" already exists.`);
   }
 
-  const { balance } = await getYearBalance(activeYear.id, activeYear.startingBalance);
+  const oldCategories = await prisma.budgetCategory.findMany({
+    where: { schoolYearId: activeYear.id },
+  });
+  const startingBalance = effectiveStartingBalance(
+    activeYear.startingBalance,
+    oldCategories
+  );
+  const { balance } = await getYearBalance(activeYear.id, startingBalance);
 
   const overrideRaw = formData.get("newStartingBalance");
   const newStartingBalance =
@@ -50,6 +60,23 @@ export async function closeSchoolYear(schoolId: string, formData: FormData) {
       },
     }),
   ]);
+
+  if (oldCategories.length > 0) {
+    const newYear = await prisma.schoolYear.findUnique({
+      where: { schoolId_label: { schoolId, label: newLabel } },
+    });
+    if (newYear) {
+      await prisma.budgetCategory.createMany({
+        data: oldCategories.map((c) => ({
+          schoolYearId: newYear.id,
+          name: c.name,
+          allocatedAmount: c.allocatedAmount,
+          color: c.color,
+          isDefault: c.isDefault,
+        })),
+      });
+    }
+  }
 
   revalidatePath(`/school/${schoolId}`);
   revalidatePath(`/school/${schoolId}/years`);

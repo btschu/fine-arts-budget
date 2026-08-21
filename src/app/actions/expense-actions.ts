@@ -16,7 +16,7 @@ function parseDateOnly(raw: string): Date {
   const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(raw);
   if (!match) return new Date();
   const [, year, month, day] = match;
-  return new Date(Number(year), Number(month) - 1, Number(day));
+  return new Date(Date.UTC(Number(year), Number(month) - 1, Number(day)));
 }
 
 async function parseReceipt(formData: FormData) {
@@ -38,6 +38,21 @@ async function schoolYearWithAccess(schoolYearId: string, userId: string) {
   return schoolYear;
 }
 
+async function resolveCategoryId(
+  schoolYearId: string,
+  formData: FormData
+): Promise<string | null> {
+  const raw = String(formData.get("categoryId") ?? "").trim();
+  if (!raw) return null;
+  const category = await prisma.budgetCategory.findUnique({
+    where: { id: raw },
+  });
+  if (!category || category.schoolYearId !== schoolYearId) {
+    throw new Error("That category doesn't belong to this school year.");
+  }
+  return category.id;
+}
+
 export async function addExpense(schoolYearId: string, formData: FormData) {
   const user = await requireUser();
   const schoolYear = await schoolYearWithAccess(schoolYearId, user.id);
@@ -53,10 +68,12 @@ export async function addExpense(schoolYearId: string, formData: FormData) {
 
   const spentAt = spentAtRaw ? parseDateOnly(spentAtRaw) : new Date();
   const receipt = await parseReceipt(formData);
+  const categoryId = await resolveCategoryId(schoolYearId, formData);
 
   await prisma.expense.create({
     data: {
       schoolYearId,
+      categoryId,
       amount,
       item,
       vendor,
@@ -88,6 +105,7 @@ export async function updateExpense(
   if (!vendor) throw new Error("Who it was purchased from is required.");
 
   const receipt = await parseReceipt(formData);
+  const categoryId = await resolveCategoryId(schoolYearId, formData);
 
   await prisma.expense.update({
     where: { id: expenseId, schoolYearId },
@@ -95,6 +113,7 @@ export async function updateExpense(
       amount,
       item,
       vendor,
+      categoryId,
       spentAt: spentAtRaw ? parseDateOnly(spentAtRaw) : undefined,
       updatedById: user.id,
       updatedAt: new Date(),

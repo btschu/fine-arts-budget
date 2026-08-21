@@ -49,17 +49,34 @@ model SchoolYear {
   closedAt        DateTime?
   closedById      String?
 
-  school   School    @relation(fields: [schoolId], references: [id], onDelete: Cascade)
-  closedBy User?     @relation("ClosedBy", fields: [closedById], references: [id])
-  expenses Expense[]
+  school     School           @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+  closedBy   User?            @relation("ClosedBy", fields: [closedById], references: [id])
+  expenses   Expense[]
+  categories BudgetCategory[]
 
   @@unique([schoolId, label])
   @@index([schoolId, closedAt])
 }
 
+model BudgetCategory {
+  id              String   @id @default(cuid())
+  schoolYearId    String
+  name            String
+  allocatedAmount Decimal  @db.Decimal(10, 2)
+  isDefault       Boolean  @default(false)
+  color           String   @default("slate")
+  createdAt       DateTime @default(now())
+
+  schoolYear SchoolYear @relation(fields: [schoolYearId], references: [id], onDelete: Cascade)
+  expenses   Expense[]
+
+  @@unique([schoolYearId, name])
+}
+
 model Expense {
   id           String   @id @default(cuid())
   schoolYearId String
+  categoryId   String?
   amount       Decimal  @db.Decimal(10, 2)
   item         String
   vendor       String
@@ -73,9 +90,10 @@ model Expense {
   receiptImage    Bytes?
   receiptMimeType String?
 
-  schoolYear SchoolYear @relation(fields: [schoolYearId], references: [id], onDelete: Cascade)
-  enteredBy  User       @relation("EnteredBy", fields: [enteredById], references: [id])
-  updatedBy  User?      @relation("UpdatedBy", fields: [updatedById], references: [id])
+  schoolYear SchoolYear      @relation(fields: [schoolYearId], references: [id], onDelete: Cascade)
+  category   BudgetCategory? @relation(fields: [categoryId], references: [id])
+  enteredBy  User            @relation("EnteredBy", fields: [enteredById], references: [id])
+  updatedBy  User?           @relation("UpdatedBy", fields: [updatedById], references: [id])
 
   @@index([schoolYearId, spentAt])
 }
