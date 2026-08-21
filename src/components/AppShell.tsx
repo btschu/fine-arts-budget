@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import Sidebar from "@/components/Sidebar";
+import IdleTimeoutWarning from "@/components/IdleTimeoutWarning";
 
 export default function AppShell({
   userName,
@@ -90,6 +91,8 @@ export default function AppShell({
       )}
 
       <main className="min-w-0 flex-1">{children}</main>
+
+      <IdleTimeoutWarning />
     </div>
   );
 }
