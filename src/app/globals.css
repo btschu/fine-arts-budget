@@ -12,3 +12,9 @@
     display: none !important;
   }
 }
+
+/* Native checkboxes default to browser blue; swap it for a neutral gray
+   in dark mode so it doesn't clash with the app's red/neutral palette. */
+.dark input[type="checkbox"] {
+  accent-color: var(--color-neutral-500);
+}

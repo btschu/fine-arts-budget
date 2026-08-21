@@ -48,7 +48,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
       <head>
         <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
       </head>
-      <body className="min-h-full bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
+      <body className="min-h-full bg-slate-50 text-slate-900 dark:bg-neutral-950 dark:text-neutral-100">
         {session?.user ? (
           <AppShell
             userName={session.user.name ?? session.user.email ?? "Account"}

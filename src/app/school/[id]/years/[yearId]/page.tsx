@@ -61,7 +61,7 @@ export default async function SchoolYearReportPage({
       <div className="no-print mb-4 flex items-center justify-between">
         <Link
           href={`/school/${schoolId}/years`}
-          className="rounded border border-slate-300 px-3 py-1.5 text-sm text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-400 dark:hover:bg-slate-800"
+          className="rounded border border-slate-300 px-3 py-1.5 text-sm text-slate-600 hover:bg-slate-50 dark:border-neutral-700 dark:text-neutral-400 dark:hover:bg-neutral-800"
         >
           ← Back to school years
         </Link>
@@ -69,10 +69,10 @@ export default async function SchoolYearReportPage({
       </div>
 
       <div className="mb-6">
-        <h1 className="text-2xl font-semibold text-slate-900 dark:text-slate-100">
+        <h1 className="text-2xl font-semibold text-slate-900 dark:text-neutral-100">
           {school.name} — {year.label}
         </h1>
-        <p className="text-sm text-slate-500 dark:text-slate-400">
+        <p className="text-sm text-slate-500 dark:text-neutral-400">
           {formatDate(year.startedAt)} –{" "}
           {year.closedAt ? formatDate(year.closedAt) : "present"}
           {year.closedAt && year.closedBy && ` · Closed by ${year.closedBy.name}`}
@@ -80,29 +80,29 @@ export default async function SchoolYearReportPage({
       </div>
 
       <div className="mb-6 grid grid-cols-2 gap-4 sm:grid-cols-3">
-        <div className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-          <p className="text-xs text-slate-500 dark:text-slate-400">Starting balance</p>
-          <p className="text-lg font-semibold text-slate-900 dark:text-slate-100">
+        <div className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
+          <p className="text-xs text-slate-500 dark:text-neutral-400">Starting balance</p>
+          <p className="text-lg font-semibold text-slate-900 dark:text-neutral-100">
             {formatCurrency(startingBalance)}
           </p>
         </div>
-        <div className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-          <p className="text-xs text-slate-500 dark:text-slate-400">
+        <div className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
+          <p className="text-xs text-slate-500 dark:text-neutral-400">
             {year.closedAt ? "Ending balance" : "Current balance"}
           </p>
           <p
             className={`text-lg font-semibold ${
               endingBalance < 0
                 ? "text-red-600 dark:text-red-400"
-                : "text-slate-900 dark:text-slate-100"
+                : "text-slate-900 dark:text-neutral-100"
             }`}
           >
             {formatCurrency(endingBalance)}
           </p>
         </div>
-        <div className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-          <p className="text-xs text-slate-500 dark:text-slate-400">Total spent</p>
-          <p className="text-lg font-semibold text-slate-900 dark:text-slate-100">
+        <div className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
+          <p className="text-xs text-slate-500 dark:text-neutral-400">Total spent</p>
+          <p className="text-lg font-semibold text-slate-900 dark:text-neutral-100">
             {formatCurrency(startingBalance - endingBalance)}
           </p>
         </div>

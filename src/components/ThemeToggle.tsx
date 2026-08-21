@@ -51,7 +51,7 @@ export default function ThemeToggle() {
 
   return (
     <div
-      className="flex rounded-md border border-slate-300 p-0.5 text-xs dark:border-slate-700"
+      className="flex rounded-md border border-slate-300 p-0.5 text-xs dark:border-neutral-700"
       style={{ visibility: mounted ? "visible" : "hidden" }}
     >
       {options.map((opt) => (
@@ -62,7 +62,7 @@ export default function ThemeToggle() {
           className={`flex-1 rounded px-2 py-1 font-medium ${
             setting === opt.value
               ? "bg-red-800 text-white"
-              : "text-slate-600 hover:bg-slate-200 dark:text-slate-400 dark:hover:bg-slate-800"
+              : "text-slate-600 hover:bg-slate-200 dark:text-neutral-400 dark:hover:bg-neutral-800"
           }`}
         >
           {opt.label}

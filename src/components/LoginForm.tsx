@@ -12,7 +12,7 @@ export default function LoginForm({ callbackUrl }: { callbackUrl: string }) {
     <form action={formAction} className="flex flex-col gap-4">
       <input type="hidden" name="callbackUrl" value={callbackUrl} />
       <div className="flex flex-col gap-1">
-        <label htmlFor="email" className="text-sm font-medium text-slate-700 dark:text-slate-300">
+        <label htmlFor="email" className="text-sm font-medium text-slate-700 dark:text-neutral-300">
           Email
         </label>
         <input
@@ -21,13 +21,13 @@ export default function LoginForm({ callbackUrl }: { callbackUrl: string }) {
           type="email"
           required
           autoComplete="email"
-          className="rounded border border-slate-300 px-3 py-2 text-sm focus:border-slate-500 focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:focus:border-slate-500"
+          className="rounded border border-slate-300 px-3 py-2 text-sm focus:border-slate-500 focus:outline-none dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-100 dark:focus:border-neutral-500"
         />
       </div>
       <div className="flex flex-col gap-1">
         <label
           htmlFor="password"
-          className="text-sm font-medium text-slate-700 dark:text-slate-300"
+          className="text-sm font-medium text-slate-700 dark:text-neutral-300"
         >
           Password
         </label>
@@ -37,7 +37,7 @@ export default function LoginForm({ callbackUrl }: { callbackUrl: string }) {
           type="password"
           required
           autoComplete="current-password"
-          className="rounded border border-slate-300 px-3 py-2 text-sm focus:border-slate-500 focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:focus:border-slate-500"
+          className="rounded border border-slate-300 px-3 py-2 text-sm focus:border-slate-500 focus:outline-none dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-100 dark:focus:border-neutral-500"
         />
       </div>
       {state.error && (

@@ -40,7 +40,7 @@ function ColorPicker({
           <span
             className={`block h-5 w-5 rounded-full ${categorySwatchClass(c)} ${
               selected === c
-                ? "ring-2 ring-slate-900 ring-offset-1 dark:ring-slate-100 dark:ring-offset-slate-900"
+                ? "ring-2 ring-slate-900 ring-offset-1 dark:ring-neutral-100 dark:ring-offset-neutral-900"
                 : ""
             }`}
           />
@@ -58,7 +58,7 @@ function CategoryRow({ category }: { category: Category }) {
   const [deletePending, startDeleteTransition] = useTransition();
 
   return (
-    <div className="rounded-lg border border-slate-200 p-3 dark:border-slate-800">
+    <div className="rounded-lg border border-slate-200 p-3 dark:border-neutral-800">
       <form
         action={(formData) => {
           setError(null);
@@ -79,7 +79,7 @@ function CategoryRow({ category }: { category: Category }) {
             name="name"
             defaultValue={category.name}
             required
-            className="min-w-0 flex-1 rounded border border-slate-300 px-2 py-1 text-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+            className="min-w-0 flex-1 rounded border border-slate-300 px-2 py-1 text-sm dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-100"
           />
           <input
             name="allocatedAmount"
@@ -88,12 +88,12 @@ function CategoryRow({ category }: { category: Category }) {
             min="0"
             defaultValue={category.allocatedAmount}
             required
-            className="w-28 rounded border border-slate-300 px-2 py-1 text-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+            className="w-28 rounded border border-slate-300 px-2 py-1 text-sm dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-100"
           />
         </div>
         <div className="flex items-center justify-between gap-3">
           <ColorPicker name="color" defaultValue={category.color} />
-          <label className="flex items-center gap-1.5 text-xs text-slate-600 dark:text-slate-400">
+          <label className="flex items-center gap-1.5 text-xs text-slate-600 dark:text-neutral-400">
             <input
               type="checkbox"
               name="isDefault"
@@ -117,7 +117,7 @@ function CategoryRow({ category }: { category: Category }) {
             </button>
           ) : (
             <span className="flex items-center gap-2">
-              <span className="text-xs text-slate-600 dark:text-slate-400">
+              <span className="text-xs text-slate-600 dark:text-neutral-400">
                 Delete?
               </span>
               <button
@@ -145,7 +145,7 @@ function CategoryRow({ category }: { category: Category }) {
               <button
                 type="button"
                 onClick={() => setConfirmingDelete(false)}
-                className="rounded border border-slate-300 px-2 py-1 text-xs text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-400 dark:hover:bg-slate-800"
+                className="rounded border border-slate-300 px-2 py-1 text-xs text-slate-600 hover:bg-slate-50 dark:border-neutral-700 dark:text-neutral-400 dark:hover:bg-neutral-800"
               >
                 No
               </button>
@@ -187,7 +187,7 @@ function AddCategoryForm({ schoolYearId }: { schoolYearId: string }) {
       }}
       className="flex flex-col gap-2"
     >
-      <p className="text-xs font-medium text-slate-600 dark:text-slate-400">
+      <p className="text-xs font-medium text-slate-600 dark:text-neutral-400">
         Add a category
       </p>
       <div className="flex gap-2">
@@ -195,7 +195,7 @@ function AddCategoryForm({ schoolYearId }: { schoolYearId: string }) {
           name="name"
           placeholder="Category name"
           required
-          className="min-w-0 flex-1 rounded border border-slate-300 px-2 py-1 text-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+          className="min-w-0 flex-1 rounded border border-slate-300 px-2 py-1 text-sm dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-100"
         />
         <input
           name="allocatedAmount"
@@ -204,12 +204,12 @@ function AddCategoryForm({ schoolYearId }: { schoolYearId: string }) {
           min="0"
           placeholder="0.00"
           required
-          className="w-28 rounded border border-slate-300 px-2 py-1 text-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+          className="w-28 rounded border border-slate-300 px-2 py-1 text-sm dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-100"
         />
       </div>
       <div className="flex items-center justify-between gap-3">
         <ColorPicker name="color" defaultValue="slate" />
-        <label className="flex items-center gap-1.5 text-xs text-slate-600 dark:text-slate-400">
+        <label className="flex items-center gap-1.5 text-xs text-slate-600 dark:text-neutral-400">
           <input type="checkbox" name="isDefault" />
           Default
         </label>
@@ -240,7 +240,7 @@ export default function ManageCategoriesModal({
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="rounded border border-slate-300 px-3 py-1.5 text-sm text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-400 dark:hover:bg-slate-800"
+        className="rounded border border-slate-300 px-3 py-1.5 text-sm text-slate-600 hover:bg-slate-50 dark:border-neutral-700 dark:text-neutral-400 dark:hover:bg-neutral-800"
       >
         {categories.length === 0 ? "Add budget categories" : "Manage categories"}
       </button>
@@ -257,7 +257,7 @@ export default function ManageCategoriesModal({
           <div
             className={
               categories.length > 0
-                ? "border-t border-slate-200 pt-4 dark:border-slate-800"
+                ? "border-t border-slate-200 pt-4 dark:border-neutral-800"
                 : ""
             }
           >

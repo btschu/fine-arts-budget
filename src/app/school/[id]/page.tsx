@@ -78,12 +78,12 @@ export default async function SchoolPage({
     <div className="mx-auto max-w-5xl px-4 py-6 sm:py-10">
       <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h1 className="text-2xl font-semibold text-slate-900 dark:text-slate-100">
+          <h1 className="text-2xl font-semibold text-slate-900 dark:text-neutral-100">
             {school.name}
           </h1>
-          <p className="text-xs text-slate-400 dark:text-slate-500">{activeYear.label} school year</p>
+          <p className="text-xs text-slate-400 dark:text-neutral-500">{activeYear.label} school year</p>
           {categories.length > 0 ? (
-            <p className="text-sm text-slate-500 dark:text-slate-400">
+            <p className="text-sm text-slate-500 dark:text-neutral-400">
               Total budget: {formatCurrency(startingBalance)} (sum of
               category budgets below)
             </p>
@@ -93,14 +93,14 @@ export default async function SchoolPage({
               startingBalance={startingBalance}
             />
           ) : (
-            <p className="text-sm text-slate-500 dark:text-slate-400">
+            <p className="text-sm text-slate-500 dark:text-neutral-400">
               Starting balance: {formatCurrency(startingBalance)}
             </p>
           )}
           <div className="mt-1">
             <Link
               href={`/school/${school.id}/years`}
-              className="inline-block rounded border border-slate-300 px-2 py-1 text-xs text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-400 dark:hover:bg-slate-800"
+              className="inline-block rounded border border-slate-300 px-2 py-1 text-xs text-slate-600 hover:bg-slate-50 dark:border-neutral-700 dark:text-neutral-400 dark:hover:bg-neutral-800"
             >
               View past years
             </Link>
@@ -108,12 +108,12 @@ export default async function SchoolPage({
         </div>
         <div className="flex items-center justify-between gap-4 sm:flex-col sm:items-end sm:gap-1">
           <div className="sm:text-right">
-            <p className="text-sm text-slate-500 dark:text-slate-400">Available balance</p>
+            <p className="text-sm text-slate-500 dark:text-neutral-400">Available balance</p>
             <p
               className={`text-3xl font-semibold ${
                 currentBalance < 0
                   ? "text-red-600 dark:text-red-400"
-                  : "text-slate-900 dark:text-slate-100"
+                  : "text-slate-900 dark:text-neutral-100"
               }`}
             >
               {formatCurrency(currentBalance)}

@@ -50,7 +50,7 @@ export default async function SettingsPage() {
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-6 sm:py-10">
-      <h1 className="mb-6 text-2xl font-semibold text-slate-900 dark:text-slate-100">Settings</h1>
+      <h1 className="mb-6 text-2xl font-semibold text-slate-900 dark:text-neutral-100">Settings</h1>
 
       <div className="flex flex-col gap-8">
         <ChangePasswordForm />
@@ -59,14 +59,14 @@ export default async function SettingsPage() {
 
         {admin && schools.length > 0 && (
           <div>
-            <h2 className="mb-3 font-medium text-slate-900 dark:text-slate-100">Schools</h2>
+            <h2 className="mb-3 font-medium text-slate-900 dark:text-neutral-100">Schools</h2>
             <div className="flex flex-col gap-2">
               {schoolOptions.map((school) => (
                 <div
                   key={school.id}
-                  className="flex items-center justify-between gap-3 rounded-lg border border-slate-200 bg-white p-3 shadow-sm dark:border-slate-800 dark:bg-slate-900"
+                  className="flex items-center justify-between gap-3 rounded-lg border border-slate-200 bg-white p-3 shadow-sm dark:border-neutral-800 dark:bg-neutral-900"
                 >
-                  <p className="truncate font-medium text-slate-900 dark:text-slate-100">
+                  <p className="truncate font-medium text-slate-900 dark:text-neutral-100">
                     {school.name}
                   </p>
                   <ManageSchoolModal
@@ -80,7 +80,7 @@ export default async function SettingsPage() {
         )}
 
         {schools.length === 0 ? (
-          <p className="text-slate-500 dark:text-slate-400">
+          <p className="text-slate-500 dark:text-neutral-400">
             You&apos;re not assigned to a school yet, so there&apos;s
             nothing else to manage here.
           </p>
@@ -89,28 +89,28 @@ export default async function SettingsPage() {
             {admin && <AddTeacherForm schools={schoolOptions} />}
 
             <div>
-              <h2 className="mb-3 font-medium text-slate-900 dark:text-slate-100">Teachers</h2>
+              <h2 className="mb-3 font-medium text-slate-900 dark:text-neutral-100">Teachers</h2>
               <div className="flex flex-col gap-2">
                 {teachers.map((teacher) => (
                   <div
                     key={teacher.id}
-                    className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-slate-200 bg-white p-3 shadow-sm dark:border-slate-800 dark:bg-slate-900"
+                    className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-slate-200 bg-white p-3 shadow-sm dark:border-neutral-800 dark:bg-neutral-900"
                   >
                     <div className="min-w-0">
-                      <p className="truncate font-medium text-slate-900 dark:text-slate-100">
+                      <p className="truncate font-medium text-slate-900 dark:text-neutral-100">
                         {teacher.name}
                       </p>
-                      <p className="truncate text-sm text-slate-500 dark:text-slate-400">
+                      <p className="truncate text-sm text-slate-500 dark:text-neutral-400">
                         {teacher.email}
                       </p>
-                      <p className="truncate text-xs text-slate-400 dark:text-slate-500">
+                      <p className="truncate text-xs text-slate-400 dark:text-neutral-500">
                         {schoolOptions
                           .filter((s) => teacher.schoolIds.includes(s.id))
                           .map((s) => s.name)
                           .join(", ")}
                       </p>
                       {admin && (
-                        <p className="truncate text-xs text-slate-400 dark:text-slate-500">
+                        <p className="truncate text-xs text-slate-400 dark:text-neutral-500">
                           {teacher.lastLoginAt
                             ? `Last signed in ${formatDateTime(teacher.lastLoginAt)}`
                             : "Never signed in"}

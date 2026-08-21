@@ -12,7 +12,7 @@ export const CATEGORY_COLORS = [
 export type CategoryColor = (typeof CATEGORY_COLORS)[number];
 
 const BADGE_CLASSES: Record<CategoryColor, string> = {
-  slate: "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300",
+  slate: "bg-slate-100 text-slate-700 dark:bg-neutral-800 dark:text-neutral-300",
   amber: "bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300",
   emerald: "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300",
   sky: "bg-sky-100 text-sky-700 dark:bg-sky-900/40 dark:text-sky-300",

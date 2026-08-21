@@ -42,11 +42,11 @@ export default async function SchoolYearsPage({
     <div className="mx-auto max-w-3xl px-4 py-6 sm:py-10">
       <Link
         href={`/school/${schoolId}`}
-        className="inline-block rounded border border-slate-300 px-3 py-1.5 text-sm text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-400 dark:hover:bg-slate-800"
+        className="inline-block rounded border border-slate-300 px-3 py-1.5 text-sm text-slate-600 hover:bg-slate-50 dark:border-neutral-700 dark:text-neutral-400 dark:hover:bg-neutral-800"
       >
         ← Back to {school.name}
       </Link>
-      <h1 className="mt-2 mb-6 text-2xl font-semibold text-slate-900 dark:text-slate-100">
+      <h1 className="mt-2 mb-6 text-2xl font-semibold text-slate-900 dark:text-neutral-100">
         {school.name} — school years
       </h1>
 
@@ -55,10 +55,10 @@ export default async function SchoolYearsPage({
           <Link
             key={year.id}
             href={`/school/${schoolId}/years/${year.id}`}
-            className="flex items-center justify-between rounded-lg border border-slate-200 bg-white p-4 shadow-sm hover:border-slate-300 dark:border-slate-800 dark:bg-slate-900 dark:hover:border-slate-700"
+            className="flex items-center justify-between rounded-lg border border-slate-200 bg-white p-4 shadow-sm hover:border-slate-300 dark:border-neutral-800 dark:bg-neutral-900 dark:hover:border-neutral-700"
           >
             <div>
-              <p className="font-medium text-slate-900 dark:text-slate-100">
+              <p className="font-medium text-slate-900 dark:text-neutral-100">
                 {year.label}{" "}
                 {!year.closedAt && (
                   <span className="ml-1 rounded bg-emerald-100 px-1.5 py-0.5 text-xs font-medium text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300">
@@ -66,12 +66,12 @@ export default async function SchoolYearsPage({
                   </span>
                 )}
               </p>
-              <p className="text-xs text-slate-500 dark:text-slate-400">
+              <p className="text-xs text-slate-500 dark:text-neutral-400">
                 Started {formatDate(year.startedAt)}
                 {year.closedAt && ` · Closed ${formatDate(year.closedAt)}`}
               </p>
             </div>
-            <p className="font-medium text-slate-900 dark:text-slate-100">
+            <p className="font-medium text-slate-900 dark:text-neutral-100">
               {formatCurrency(year.endingBalance)}
             </p>
           </Link>

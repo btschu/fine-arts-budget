@@ -29,11 +29,11 @@ export default async function DashboardPage() {
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-6 sm:py-10">
-      <h1 className="mb-6 text-2xl font-semibold text-slate-900 dark:text-slate-100">
+      <h1 className="mb-6 text-2xl font-semibold text-slate-900 dark:text-neutral-100">
         Your schools
       </h1>
       {schoolsWithBalance.length === 0 ? (
-        <p className="text-slate-500 dark:text-slate-400">
+        <p className="text-slate-500 dark:text-neutral-400">
           You haven&apos;t been added to a school&apos;s budget yet. Ask
           whoever set up your account to add you.
         </p>
@@ -43,24 +43,24 @@ export default async function DashboardPage() {
             <Link
               key={school.id}
               href={`/school/${school.id}`}
-              className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm transition hover:border-slate-300 hover:shadow dark:border-slate-800 dark:bg-slate-900 dark:hover:border-slate-700"
+              className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm transition hover:border-slate-300 hover:shadow dark:border-neutral-800 dark:bg-neutral-900 dark:hover:border-neutral-700"
             >
-              <h2 className="text-lg font-medium text-slate-900 dark:text-slate-100">
+              <h2 className="text-lg font-medium text-slate-900 dark:text-neutral-100">
                 {school.name}
               </h2>
               {school.activeYear && (
-                <p className="mt-1 text-xs text-slate-400 dark:text-slate-500">
+                <p className="mt-1 text-xs text-slate-400 dark:text-neutral-500">
                   {school.activeYear.label} school year
                 </p>
               )}
-              <p className="mt-3 text-sm text-slate-500 dark:text-slate-400">
+              <p className="mt-3 text-sm text-slate-500 dark:text-neutral-400">
                 Available balance
               </p>
               <p
                 className={`mt-1 text-2xl font-semibold ${
                   school.balance < 0
                     ? "text-red-600 dark:text-red-400"
-                    : "text-slate-900 dark:text-slate-100"
+                    : "text-slate-900 dark:text-neutral-100"
                 }`}
               >
                 {formatCurrency(school.balance)}

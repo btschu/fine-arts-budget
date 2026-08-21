@@ -23,7 +23,7 @@ export default function AppShell({
   return (
     <div className="min-h-screen lg:flex">
       {/* Desktop sidebar */}
-      <aside className="no-print hidden lg:block lg:w-64 lg:shrink-0 lg:border-r lg:border-slate-200 dark:lg:border-slate-800">
+      <aside className="no-print hidden lg:block lg:w-64 lg:shrink-0 lg:border-r lg:border-slate-200 dark:lg:border-neutral-800">
         <div className="fixed h-screen w-64">
           <Sidebar
             userName={userName}
@@ -35,10 +35,10 @@ export default function AppShell({
       </aside>
 
       {/* Mobile top bar */}
-      <div className="no-print flex items-center justify-between border-b border-slate-200 bg-slate-100 px-4 py-3 lg:hidden dark:border-slate-800 dark:bg-slate-900">
+      <div className="no-print flex items-center justify-between border-b border-slate-200 bg-slate-100 px-4 py-3 lg:hidden dark:border-neutral-800 dark:bg-neutral-900">
         <Link
           href="/"
-          className="flex items-center gap-2 text-lg font-semibold text-slate-900 dark:text-slate-100"
+          className="flex items-center gap-2 text-lg font-semibold text-slate-900 dark:text-neutral-100"
         >
           <span
             className="flex h-7 w-7 items-center justify-center rounded-lg bg-red-800 text-base font-bold text-white"
@@ -52,7 +52,7 @@ export default function AppShell({
           type="button"
           aria-label="Open menu"
           onClick={() => setDrawerOpen(true)}
-          className="rounded p-2 text-slate-600 hover:bg-slate-200 dark:text-slate-400 dark:hover:bg-slate-800"
+          className="rounded p-2 text-slate-600 hover:bg-slate-200 dark:text-neutral-400 dark:hover:bg-neutral-800"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"

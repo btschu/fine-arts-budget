@@ -12,11 +12,11 @@ export default function ChangePasswordForm() {
   return (
     <form
       action={formAction}
-      className="flex flex-col gap-3 rounded-lg border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900"
+      className="flex flex-col gap-3 rounded-lg border border-slate-200 bg-white p-5 shadow-sm dark:border-neutral-800 dark:bg-neutral-900"
     >
-      <h2 className="font-medium text-slate-900 dark:text-slate-100">Change password</h2>
+      <h2 className="font-medium text-slate-900 dark:text-neutral-100">Change password</h2>
       <div className="flex flex-col gap-1">
-        <label className="text-xs font-medium text-slate-600 dark:text-slate-400">
+        <label className="text-xs font-medium text-slate-600 dark:text-neutral-400">
           Current password
         </label>
         <input
@@ -24,11 +24,11 @@ export default function ChangePasswordForm() {
           type="password"
           required
           autoComplete="current-password"
-          className="rounded border border-slate-300 px-2 py-1.5 text-sm sm:max-w-xs dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+          className="rounded border border-slate-300 px-2 py-1.5 text-sm sm:max-w-xs dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-100"
         />
       </div>
       <div className="flex flex-col gap-1">
-        <label className="text-xs font-medium text-slate-600 dark:text-slate-400">
+        <label className="text-xs font-medium text-slate-600 dark:text-neutral-400">
           New password
         </label>
         <input
@@ -37,7 +37,7 @@ export default function ChangePasswordForm() {
           required
           minLength={8}
           autoComplete="new-password"
-          className="rounded border border-slate-300 px-2 py-1.5 text-sm sm:max-w-xs dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+          className="rounded border border-slate-300 px-2 py-1.5 text-sm sm:max-w-xs dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-100"
         />
       </div>
       {state.error && <p className="text-sm text-red-600 dark:text-red-400">{state.error}</p>}

@@ -25,7 +25,7 @@ function NavLink({
       className={`rounded-md px-3 py-2 text-sm font-medium ${
         active
           ? "bg-red-800 text-white"
-          : "text-slate-600 hover:bg-slate-200 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100"
+          : "text-slate-600 hover:bg-slate-200 hover:text-slate-900 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-neutral-100"
       }`}
     >
       {children}
@@ -47,12 +47,12 @@ export default function Sidebar({
   onNavigate?: () => void;
 }) {
   return (
-    <div className="flex h-full flex-col bg-slate-100 dark:bg-slate-900">
+    <div className="flex h-full flex-col bg-slate-100 dark:bg-neutral-900">
       <div className="px-4 py-5">
         <Link
           href="/"
           onClick={onNavigate}
-          className="flex items-center gap-2 text-lg font-semibold text-slate-900 dark:text-slate-100"
+          className="flex items-center gap-2 text-lg font-semibold text-slate-900 dark:text-neutral-100"
         >
           <span
             className="flex h-8 w-8 items-center justify-center rounded-lg bg-red-800 text-lg font-bold text-white"
@@ -65,7 +65,7 @@ export default function Sidebar({
       </div>
 
       <nav className="flex flex-1 flex-col gap-1 overflow-y-auto px-3">
-        <p className="mt-2 px-3 text-xs font-semibold uppercase tracking-wide text-slate-400 dark:text-slate-500">
+        <p className="mt-2 px-3 text-xs font-semibold uppercase tracking-wide text-slate-400 dark:text-neutral-500">
           Schools
         </p>
         {schools.map((school) => (
@@ -78,7 +78,7 @@ export default function Sidebar({
           </NavLink>
         ))}
 
-        <p className="mt-4 px-3 text-xs font-semibold uppercase tracking-wide text-slate-400 dark:text-slate-500">
+        <p className="mt-4 px-3 text-xs font-semibold uppercase tracking-wide text-slate-400 dark:text-neutral-500">
           Account
         </p>
         <NavLink href="/settings" onNavigate={onNavigate}>
@@ -86,8 +86,8 @@ export default function Sidebar({
         </NavLink>
       </nav>
 
-      <div className="border-t border-slate-200 px-4 py-4 dark:border-slate-800">
-        <p className="mb-2 truncate text-sm text-slate-600 dark:text-slate-400">
+      <div className="border-t border-slate-200 px-4 py-4 dark:border-neutral-800">
+        <p className="mb-2 truncate text-sm text-slate-600 dark:text-neutral-400">
           {userName}
         </p>
         <div className="mb-2">
@@ -101,7 +101,7 @@ export default function Sidebar({
         <form action={signOutAction}>
           <button
             type="submit"
-            className="w-full rounded border border-slate-300 px-3 py-1.5 text-sm hover:bg-slate-200 dark:border-slate-700 dark:hover:bg-slate-800"
+            className="w-full rounded border border-slate-300 px-3 py-1.5 text-sm hover:bg-slate-200 dark:border-neutral-700 dark:hover:bg-neutral-800"
           >
             Sign out
           </button>

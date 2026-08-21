@@ -26,7 +26,7 @@ export default function CloseYearForm({
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="rounded border border-slate-300 px-3 py-1.5 text-sm text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-400 dark:hover:bg-slate-800"
+        className="rounded border border-slate-300 px-3 py-1.5 text-sm text-slate-600 hover:bg-slate-50 dark:border-neutral-700 dark:text-neutral-400 dark:hover:bg-neutral-800"
       >
         Close out {currentLabel} &amp; start a new year
       </button>
@@ -36,7 +36,7 @@ export default function CloseYearForm({
   if (pendingFormData) {
     return (
       <div className="rounded-lg border border-amber-200 bg-amber-50 p-4 dark:border-amber-900 dark:bg-amber-950/40">
-        <p className="text-sm text-slate-700 dark:text-slate-300">
+        <p className="text-sm text-slate-700 dark:text-neutral-300">
           Close out <strong>{currentLabel}</strong> and start{" "}
           <strong>&quot;{newLabel}&quot;</strong>? This can&apos;t be undone
           from here.
@@ -67,7 +67,7 @@ export default function CloseYearForm({
           <button
             type="button"
             onClick={() => setPendingFormData(null)}
-            className="rounded border border-slate-300 px-4 py-1.5 text-sm text-slate-600 hover:bg-white dark:border-slate-700 dark:text-slate-400 dark:hover:bg-slate-800"
+            className="rounded border border-slate-300 px-4 py-1.5 text-sm text-slate-600 hover:bg-white dark:border-neutral-700 dark:text-neutral-400 dark:hover:bg-neutral-800"
           >
             Cancel
           </button>
@@ -78,10 +78,10 @@ export default function CloseYearForm({
 
   return (
     <div className="rounded-lg border border-amber-200 bg-amber-50 p-4 dark:border-amber-900 dark:bg-amber-950/40">
-      <h3 className="font-medium text-slate-900 dark:text-slate-100">
+      <h3 className="font-medium text-slate-900 dark:text-neutral-100">
         Close out {currentLabel}
       </h3>
-      <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
+      <p className="mt-1 text-sm text-slate-600 dark:text-neutral-400">
         This locks {currentLabel} as a read-only, printable record and starts
         a new active school year with the ending balance (
         {formatCurrency(endingBalance)}) carried over as the new starting
@@ -97,7 +97,7 @@ export default function CloseYearForm({
         className="mt-3 flex flex-col gap-3 sm:flex-row sm:items-end"
       >
         <div className="flex flex-col gap-1">
-          <label className="text-xs font-medium text-slate-600 dark:text-slate-400">
+          <label className="text-xs font-medium text-slate-600 dark:text-neutral-400">
             New school year name
           </label>
           <input
@@ -105,11 +105,11 @@ export default function CloseYearForm({
             type="text"
             placeholder="2027-2028"
             required
-            className="rounded border border-slate-300 px-2 py-1.5 text-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+            className="rounded border border-slate-300 px-2 py-1.5 text-sm dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-100"
           />
         </div>
         <div className="flex flex-col gap-1">
-          <label className="text-xs font-medium text-slate-600 dark:text-slate-400">
+          <label className="text-xs font-medium text-slate-600 dark:text-neutral-400">
             New starting balance (optional override)
           </label>
           <input
@@ -117,7 +117,7 @@ export default function CloseYearForm({
             type="number"
             step="0.01"
             placeholder={endingBalance.toFixed(2)}
-            className="rounded border border-slate-300 px-2 py-1.5 text-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+            className="rounded border border-slate-300 px-2 py-1.5 text-sm dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-100"
           />
         </div>
         <div className="flex gap-2">
@@ -130,7 +130,7 @@ export default function CloseYearForm({
           <button
             type="button"
             onClick={() => setOpen(false)}
-            className="rounded border border-slate-300 px-4 py-1.5 text-sm text-slate-600 hover:bg-white dark:border-slate-700 dark:text-slate-400 dark:hover:bg-slate-800"
+            className="rounded border border-slate-300 px-4 py-1.5 text-sm text-slate-600 hover:bg-white dark:border-neutral-700 dark:text-neutral-400 dark:hover:bg-neutral-800"
           >
             Cancel
           </button>
