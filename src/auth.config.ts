@@ -4,8 +4,17 @@ import type { NextAuthConfig } from "next-auth";
 // and the proxy (proxy.ts). Keeping this free of bcrypt/Prisma/pg matters:
 // proxy.ts runs on every request in a minimal function, and bundling
 // Node-native DB drivers into it breaks on some hosts.
+const ONE_HOUR = 60 * 60;
+
 export const authConfig: NextAuthConfig = {
-  session: { strategy: "jwt" },
+  session: {
+    strategy: "jwt",
+    // Signs a user out after an hour of no activity. Each request more
+    // than updateAge into the session re-issues the token, so this is
+    // an idle timeout, not a hard expiry from login time.
+    maxAge: ONE_HOUR,
+    updateAge: 5 * 60,
+  },
   pages: { signIn: "/login" },
   providers: [],
   callbacks: {
