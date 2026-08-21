@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { auth } from "@/auth";
-import { getMySchools } from "@/lib/authz";
+import { getMySchools, isAdmin, isViewingAsTeacher } from "@/lib/authz";
 import AppShell from "@/components/AppShell";
 
 const geistSans = Geist({
@@ -36,6 +36,8 @@ const THEME_INIT_SCRIPT = `
 export default async function RootLayout({ children }: LayoutProps<"/">) {
   const session = await auth();
   const schools = session?.user?.id ? await getMySchools(session.user.id) : [];
+  const admin = session?.user?.id ? await isAdmin(session.user.id) : false;
+  const viewingAsTeacher = await isViewingAsTeacher();
 
   return (
     <html
@@ -51,6 +53,8 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
           <AppShell
             userName={session.user.name ?? session.user.email ?? "Account"}
             schools={schools.map((s) => ({ id: s.id, name: s.name }))}
+            admin={admin}
+            viewingAsTeacher={viewingAsTeacher}
           >
             {children}
           </AppShell>

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOutAction } from "@/app/actions/auth-actions";
 import ThemeToggle from "@/components/ThemeToggle";
+import ViewAsTeacherToggle from "@/components/ViewAsTeacherToggle";
 
 function NavLink({
   href,
@@ -24,7 +25,7 @@ function NavLink({
       className={`rounded-md px-3 py-2 text-sm font-medium ${
         active
           ? "bg-red-800 text-white"
-          : "text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100"
+          : "text-slate-600 hover:bg-slate-200 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100"
       }`}
     >
       {children}
@@ -35,14 +36,18 @@ function NavLink({
 export default function Sidebar({
   userName,
   schools,
+  admin,
+  viewingAsTeacher,
   onNavigate,
 }: {
   userName: string;
   schools: { id: string; name: string }[];
+  admin: boolean;
+  viewingAsTeacher: boolean;
   onNavigate?: () => void;
 }) {
   return (
-    <div className="flex h-full flex-col bg-white dark:bg-slate-900">
+    <div className="flex h-full flex-col bg-slate-100 dark:bg-slate-900">
       <div className="px-4 py-5">
         <Link
           href="/"
@@ -88,10 +93,15 @@ export default function Sidebar({
         <div className="mb-2">
           <ThemeToggle />
         </div>
+        {admin && (
+          <div className="mb-2">
+            <ViewAsTeacherToggle viewingAsTeacher={viewingAsTeacher} />
+          </div>
+        )}
         <form action={signOutAction}>
           <button
             type="submit"
-            className="w-full rounded border border-slate-300 px-3 py-1.5 text-sm hover:bg-slate-100 dark:border-slate-700 dark:hover:bg-slate-800"
+            className="w-full rounded border border-slate-300 px-3 py-1.5 text-sm hover:bg-slate-200 dark:border-slate-700 dark:hover:bg-slate-800"
           >
             Sign out
           </button>

@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
-import { requireUser, assertSchoolAccess } from "@/lib/authz";
+import { requireUser, assertSchoolAccess, assertAdmin } from "@/lib/authz";
 
 function parseAmount(raw: FormDataEntryValue | null): number {
   const value = Number(raw);
@@ -143,6 +143,7 @@ export async function updateStartingBalance(
 ) {
   const user = await requireUser();
   const schoolYear = await schoolYearWithAccess(schoolYearId, user.id);
+  await assertAdmin(user.id);
   if (schoolYear.closedAt) throw new Error("This school year is closed.");
 
   const raw = Number(formData.get("startingBalance"));

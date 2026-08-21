@@ -26,6 +26,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           const valid = await bcrypt.compare(password, user.passwordHash);
           if (!valid) return null;
 
+          await prisma.user.update({
+            where: { id: user.id },
+            data: { lastLoginAt: new Date() },
+          });
+
           return { id: user.id, name: user.name, email: user.email };
         } catch (err) {
           console.error("AUTHORIZE_ERROR", err);

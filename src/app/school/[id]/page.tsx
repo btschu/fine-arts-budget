@@ -4,7 +4,7 @@ import {
   requireUser,
   requireSchoolAccess,
   getActiveSchoolYear,
-  isAdmin,
+  getDisplayAdmin,
 } from "@/lib/authz";
 import { prisma } from "@/lib/prisma";
 import { formatCurrency } from "@/lib/format";
@@ -38,7 +38,7 @@ export default async function SchoolPage({
   const activeYear = await getActiveSchoolYear(schoolId);
   if (!activeYear) notFound();
 
-  const admin = await isAdmin(user.id);
+  const admin = await getDisplayAdmin(user.id);
 
   const expenses = await prisma.expense.findMany({
     where: { schoolYearId: activeYear.id },
@@ -87,11 +87,15 @@ export default async function SchoolPage({
               Total budget: {formatCurrency(startingBalance)} (sum of
               category budgets below)
             </p>
-          ) : (
+          ) : admin ? (
             <StartingBalanceEditor
               schoolYearId={activeYear.id}
               startingBalance={startingBalance}
             />
+          ) : (
+            <p className="text-sm text-slate-500 dark:text-slate-400">
+              Starting balance: {formatCurrency(startingBalance)}
+            </p>
           )}
           <div className="mt-1">
             <Link

@@ -62,7 +62,7 @@ export default function ThemeToggle() {
           className={`flex-1 rounded px-2 py-1 font-medium ${
             setting === opt.value
               ? "bg-red-800 text-white"
-              : "text-slate-600 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800"
+              : "text-slate-600 hover:bg-slate-200 dark:text-slate-400 dark:hover:bg-slate-800"
           }`}
         >
           {opt.label}

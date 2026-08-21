@@ -1,5 +1,6 @@
-import { requireUser, getMySchools, isAdmin } from "@/lib/authz";
+import { requireUser, getMySchools, getDisplayAdmin } from "@/lib/authz";
 import { prisma } from "@/lib/prisma";
+import { formatDateTime } from "@/lib/format";
 import AddTeacherForm from "@/components/AddTeacherForm";
 import AddSchoolForm from "@/components/AddSchoolForm";
 import ManageMemberModal from "@/components/ManageMemberModal";
@@ -10,7 +11,7 @@ import ChangePasswordForm from "@/components/ChangePasswordForm";
 export default async function SettingsPage() {
   const user = await requireUser();
   const schools = await getMySchools(user.id);
-  const admin = await isAdmin(user.id);
+  const admin = await getDisplayAdmin(user.id);
 
   const memberships = await prisma.membership.findMany({
     where: { schoolId: { in: schools.map((s) => s.id) } },
@@ -25,6 +26,7 @@ export default async function SettingsPage() {
       name: string;
       email: string;
       isAdmin: boolean;
+      lastLoginAt: Date | null;
       schoolIds: string[];
     }
   >();
@@ -34,6 +36,7 @@ export default async function SettingsPage() {
       name: m.user.name,
       email: m.user.email,
       isAdmin: m.user.isAdmin,
+      lastLoginAt: m.user.lastLoginAt,
       schoolIds: [],
     };
     entry.schoolIds.push(m.schoolId);
@@ -106,6 +109,13 @@ export default async function SettingsPage() {
                           .map((s) => s.name)
                           .join(", ")}
                       </p>
+                      {admin && (
+                        <p className="truncate text-xs text-slate-400 dark:text-slate-500">
+                          {teacher.lastLoginAt
+                            ? `Last signed in ${formatDateTime(teacher.lastLoginAt)}`
+                            : "Never signed in"}
+                        </p>
+                      )}
                     </div>
                     {admin && (
                       <div className="flex items-center gap-4">
